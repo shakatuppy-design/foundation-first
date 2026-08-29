@@ -108,6 +108,8 @@ export type Database = {
         Row: {
           config: Json
           created_at: string
+          created_by: string | null
+          description: string
           id: string
           kind: string
           name: string
@@ -118,6 +120,8 @@ export type Database = {
         Insert: {
           config?: Json
           created_at?: string
+          created_by?: string | null
+          description?: string
           id?: string
           kind?: string
           name: string
@@ -128,6 +132,8 @@ export type Database = {
         Update: {
           config?: Json
           created_at?: string
+          created_by?: string | null
+          description?: string
           id?: string
           kind?: string
           name?: string
@@ -480,6 +486,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      agent_has_authority: {
+        Args: {
+          _agent: string
+          _capability: Database["public"]["Enums"]["digital_capability"]
+          _profile: string
+        }
+        Returns: boolean
+      }
+      agent_is_eligible: { Args: { _agent: string }; Returns: boolean }
       can_read_digital_profile: { Args: { _profile: string }; Returns: boolean }
       controls_digital_profile: { Args: { _profile: string }; Returns: boolean }
       create_organization: {

@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.log_agent_registry_event() FROM PUBLIC, anon, authenticated;
