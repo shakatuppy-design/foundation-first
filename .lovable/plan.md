@@ -57,27 +57,27 @@ No code path reads discovery metadata to make an access, authority, or trust dec
 **On SECURITY DEFINER (revised):** the previously proposed `lookup_discovery()` definer function is dropped. Its only purpose was to hide unlisted rows from listing while allowing exact-identifier lookup — an ordinary RLS policy cannot see the caller's WHERE clause, so enforcing "exact match only" in the database would have required a definer function. That is not worth a new privileged surface, because the rows are discovery-safe by construction. Instead: unlisted rows are covered by a normal authenticated RLS policy, and the "exact identifier only" rule is enforced in the search server function, which never returns unlisted rows for name/category/capability queries — only for a full `discovery_id` equality match. This is a UX/obscurity boundary, not a security boundary; the real protection for unlisted is that the 128-bit identifier is unguessable, plus the fact that the data is non-sensitive. No new SECURITY DEFINER functions are introduced in Session 3B.
 - Anonymous: no grants, no policies. Discovery stays authenticated-only, matching the existing model.
 
-
-## 7. Intent model
+## 8. Intent model
 
 Intents are declarative records with an optional descriptive `discovery_requirement`. No automatic linkage to agents, no matching, no jobs.
 
-## 8. Authority boundary
+## 9. Authority boundary
 
-Discovery rows carry no capability grants. `agent_has_authority()` remains the only authority check and reads `digital_authority_rules` only. Nothing in this session inserts, infers, or widens authority. Discovered ≠ authorized.
+Discovery rows carry no capability grants. `agent_has_authority()` remains the only authority check and reads `digital_authority_rules` only. Nothing in this session inserts, infers, or widens authority. Discovered ≠ authorized; advertised ≠ verified.
 
-## 9. UI changes
+## 10. UI changes
 
 - `/digital-self` gains a **My Intents** section: list + create (title, description, type, priority, status), edit, cancel/delete — scoped to the selected Digital Self.
-- `/agents/$agentId` gains a **Discovery** section: Discovery ID with copy button, display name, agent kind, categories, capabilities, visibility selector, status; edit discovery profile dialog; create-if-absent for owner/admin.
-- New `/discovery` route: basic search by discovery identifier, display name, category, or capability, returning discovery-safe fields only, with an explicit "discovery does not grant authority" note.
+- `/agents/$agentId` gains a **Discovery** section: Discovery ID with copy button, display name, agent kind, categories, capabilities, visibility selector, status; edit discovery profile dialog; create-if-absent for owner/admin. Labelled with the caveats: experimental identifier, self-declared (unverified) capabilities, no authority.
+- New `/discovery` route: basic search by discovery identifier, display name, category, or capability, returning discovery-safe fields only, with an explicit "discovery does not grant authority, and advertised capabilities are unverified" note.
 No chat UI, no messaging.
 
-## 10. Migration strategy
+## 11. Migration strategy
 
-Single additive migration: enums → tables → GRANTs (authenticated, service_role; REVOKE from anon/PUBLIC) → ENABLE RLS → policies → indexes (discovery_id unique, categories/capabilities GIN, intent profile+status) → `set_updated_at` triggers → audit triggers emitting `intent.created`, `intent.updated`, `intent.cancelled`, `discovery.updated`, `discovery.visibility_changed` into `agent_activity_logs`. No changes to existing tables, policies, or functions. No data deleted; discovery records are never auto-removed on status change.
+Single additive migration: enums → tables → GRANTs (authenticated, service_role; REVOKE from anon/PUBLIC) → ENABLE RLS → policies → indexes (discovery_id unique, categories/capabilities GIN, intent profile+status) → `set_updated_at` triggers → audit triggers emitting `intent.created`, `intent.updated`, `intent.cancelled`, `discovery.updated`, `discovery.visibility_changed` into `agent_activity_logs`. No new SECURITY DEFINER functions. No changes to existing tables, policies, or functions. No data deleted; discovery records are never auto-removed on status change.
 
-## 11. Behavioral tests
+## 12. Behavioral tests
 
 Live SQL under real tokens for Owner A, Admin A, Member A, Owner B, anonymous:
-intent CRUD by controller only; admin denied on personal intent; org intent by owner/admin; cross-tenant intent denied; private discovery invisible; unlisted only via exact identifier; public search returns safe fields only; suspended/revoked/archived agents excluded from public discovery; discovery grants no authority (`agent_has_authority` still false); no Digital Self data reachable through discovery; identifier enumeration attempts; anonymous denied on both tables and the lookup function. Then Session 1/2/3A regression, typecheck, production build, and route checks.
+intent CRUD by controller only; admin denied on personal intent; org intent by owner/admin; cross-tenant intent denied; private discovery invisible to non-org users; unlisted excluded from name/category/capability search and returned only on exact identifier; public search returns safe fields only; suspended/revoked/archived agents excluded from discovery results; discovery grants no authority (`agent_has_authority` still false after discovery); no Digital Self data reachable through discovery; identifier enumeration attempts; anonymous denied on both tables. Then Session 1/2/3A regression, typecheck, production build, and route checks.
+
