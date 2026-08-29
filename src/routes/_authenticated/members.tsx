@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AppShell } from "@/components/app-shell";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 import { useOrganizations } from "@/lib/org-context";
 import { listOrganizationMembers } from "@/lib/organizations.functions";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,8 @@ export const Route = createFileRoute("/_authenticated/members")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  errorComponent: ({ error }) => <RouteError error={error as Error} />,
+  notFoundComponent: RouteNotFound,
   component: MembersPage,
 });
 

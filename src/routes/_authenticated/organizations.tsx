@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 import { useOrganizations } from "@/lib/org-context";
 import { createOrganization } from "@/lib/organizations.functions";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,8 @@ export const Route = createFileRoute("/_authenticated/organizations")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  errorComponent: ({ error }) => <RouteError error={error as Error} />,
+  notFoundComponent: RouteNotFound,
   component: OrganizationsPage,
 });
 
