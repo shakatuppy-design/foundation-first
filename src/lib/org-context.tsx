@@ -31,7 +31,7 @@ export function OrganizationProvider({ children }: { children: ReactNode }) {
     queryFn: () => fetchOrgs(),
   });
 
-  const organizations = data ?? [];
+  const organizations = useMemo(() => data ?? [], [data]);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
