@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { JsonValue } from "@/lib/digital-self.functions";
 
 export const AGENT_KINDS = ["personal", "organization", "service", "specialized"] as const;
 export type AgentKind = (typeof AGENT_KINDS)[number];
@@ -28,7 +29,7 @@ export type AgentAuthorityGrant = {
   digital_profile_id: string;
   digital_profile_name: string;
   capability: string;
-  scope: unknown;
+  scope: JsonValue;
   allowed: boolean;
   status: string;
   expires_at: string | null;
@@ -185,7 +186,7 @@ export const getAgent = createServerFn({ method: "POST" })
         digital_profile_id: r.digital_profile_id,
         digital_profile_name: profileNames[r.digital_profile_id] ?? "Digital Self",
         capability: r.capability,
-        scope: r.scope,
+        scope: r.scope as JsonValue,
         allowed: r.allowed,
         status: r.status,
         expires_at: r.expires_at,
