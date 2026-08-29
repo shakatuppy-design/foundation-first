@@ -18,6 +18,7 @@ import { Route as AuthenticatedDigitalSelfRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
 import { Route as AuthenticatedOrganizationsRouteImport } from './routes/_authenticated/organizations'
 import { Route as AuthenticatedAgentsIndexRouteImport } from './routes/_authenticated/agents.index'
+import { Route as AuthenticatedAgentsAgentIdRouteImport } from './routes/_authenticated/agents.$agentId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -66,6 +67,12 @@ const AuthenticatedAgentsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAgentsRoute,
   } as any)
+const AuthenticatedAgentsAgentIdRoute =
+  AuthenticatedAgentsAgentIdRouteImport.update({
+    id: '/$agentId',
+    path: '/$agentId',
+    getParentRoute: () => AuthenticatedAgentsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/digital-self': typeof AuthenticatedDigitalSelfRoute
   '/members': typeof AuthenticatedMembersRoute
   '/organizations': typeof AuthenticatedOrganizationsRoute
+  '/agents/$agentId': typeof AuthenticatedAgentsAgentIdRoute
   '/agents/': typeof AuthenticatedAgentsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -84,6 +92,7 @@ export interface FileRoutesByTo {
   '/digital-self': typeof AuthenticatedDigitalSelfRoute
   '/members': typeof AuthenticatedMembersRoute
   '/organizations': typeof AuthenticatedOrganizationsRoute
+  '/agents/$agentId': typeof AuthenticatedAgentsAgentIdRoute
   '/agents': typeof AuthenticatedAgentsIndexRoute
 }
 export interface FileRoutesById {
@@ -96,6 +105,7 @@ export interface FileRoutesById {
   '/_authenticated/digital-self': typeof AuthenticatedDigitalSelfRoute
   '/_authenticated/members': typeof AuthenticatedMembersRoute
   '/_authenticated/organizations': typeof AuthenticatedOrganizationsRoute
+  '/_authenticated/agents/$agentId': typeof AuthenticatedAgentsAgentIdRoute
   '/_authenticated/agents/': typeof AuthenticatedAgentsIndexRoute
 }
 export interface FileRouteTypes {
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/digital-self'
     | '/members'
     | '/organizations'
+    | '/agents/$agentId'
     | '/agents/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/digital-self'
     | '/members'
     | '/organizations'
+    | '/agents/$agentId'
     | '/agents'
   id:
     | '__root__'
@@ -128,6 +140,7 @@ export interface FileRouteTypes {
     | '/_authenticated/digital-self'
     | '/_authenticated/members'
     | '/_authenticated/organizations'
+    | '/_authenticated/agents/$agentId'
     | '/_authenticated/agents/'
   fileRoutesById: FileRoutesById
 }
@@ -202,14 +215,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgentsIndexRouteImport
       parentRoute: typeof AuthenticatedAgentsRoute
     }
+    '/_authenticated/agents/$agentId': {
+      id: '/_authenticated/agents/$agentId'
+      path: '/$agentId'
+      fullPath: '/agents/$agentId'
+      preLoaderRoute: typeof AuthenticatedAgentsAgentIdRouteImport
+      parentRoute: typeof AuthenticatedAgentsRoute
+    }
   }
 }
 
 interface AuthenticatedAgentsRouteChildren {
+  AuthenticatedAgentsAgentIdRoute: typeof AuthenticatedAgentsAgentIdRoute
   AuthenticatedAgentsIndexRoute: typeof AuthenticatedAgentsIndexRoute
 }
 
 const AuthenticatedAgentsRouteChildren: AuthenticatedAgentsRouteChildren = {
+  AuthenticatedAgentsAgentIdRoute: AuthenticatedAgentsAgentIdRoute,
   AuthenticatedAgentsIndexRoute: AuthenticatedAgentsIndexRoute,
 }
 
