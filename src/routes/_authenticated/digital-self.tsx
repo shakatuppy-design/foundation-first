@@ -133,7 +133,7 @@ function DigitalSelfPage() {
 
   if (query.isLoading) {
     return (
-      <AppShell title="My Digital Self" description={activeOrg?.name}>
+      <AppShell title="My Digital Self" description={activeOrg?.name ?? "No active organization"}>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" /> Loading your Digital Self…
         </div>
@@ -143,7 +143,7 @@ function DigitalSelfPage() {
 
   if (query.isError) {
     return (
-      <AppShell title="My Digital Self" description={activeOrg?.name}>
+      <AppShell title="My Digital Self" description={activeOrg?.name ?? "No active organization"}>
         <Card className="max-w-xl">
           <CardHeader>
             <CardTitle>Could not load your Digital Self</CardTitle>
@@ -161,7 +161,7 @@ function DigitalSelfPage() {
 
   if (!bundle.profile) {
     return (
-      <AppShell title="My Digital Self" description={activeOrg?.name}>
+      <AppShell title="My Digital Self" description={activeOrg?.name ?? "No active organization"}>
         <Card className="max-w-xl">
           <CardHeader>
             <CardTitle>Create your Digital Self</CardTitle>
@@ -196,7 +196,7 @@ function DigitalSelfPage() {
   }
 
   return (
-    <AppShell title="My Digital Self" description={activeOrg?.name}>
+    <AppShell title="My Digital Self" description={activeOrg?.name ?? "No active organization"}>
       <div className="space-y-6">
         <IdentityHeader bundle={bundle} />
         <Tabs defaultValue="profile">

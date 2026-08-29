@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAgentsRouteImport } from './routes/_authenticated/agents'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDigitalSelfRouteImport } from './routes/_authenticated/digital-self'
 import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
 import { Route as AuthenticatedOrganizationsRouteImport } from './routes/_authenticated/organizations'
 
@@ -41,6 +42,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDigitalSelfRoute =
+  AuthenticatedDigitalSelfRouteImport.update({
+    id: '/digital-self',
+    path: '/digital-self',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMembersRoute = AuthenticatedMembersRouteImport.update({
   id: '/members',
   path: '/members',
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/agents': typeof AuthenticatedAgentsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/digital-self': typeof AuthenticatedDigitalSelfRoute
   '/members': typeof AuthenticatedMembersRoute
   '/organizations': typeof AuthenticatedOrganizationsRoute
 }
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/agents': typeof AuthenticatedAgentsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/digital-self': typeof AuthenticatedDigitalSelfRoute
   '/members': typeof AuthenticatedMembersRoute
   '/organizations': typeof AuthenticatedOrganizationsRoute
 }
@@ -76,15 +85,29 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/agents': typeof AuthenticatedAgentsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/digital-self': typeof AuthenticatedDigitalSelfRoute
   '/_authenticated/members': typeof AuthenticatedMembersRoute
   '/_authenticated/organizations': typeof AuthenticatedOrganizationsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/agents' | '/dashboard' | '/members' | '/organizations'
+    | '/'
+    | '/auth'
+    | '/agents'
+    | '/dashboard'
+    | '/digital-self'
+    | '/members'
+    | '/organizations'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/agents' | '/dashboard' | '/members' | '/organizations'
+  to:
+    | '/'
+    | '/auth'
+    | '/agents'
+    | '/dashboard'
+    | '/digital-self'
+    | '/members'
+    | '/organizations'
   id:
     | '__root__'
     | '/'
@@ -92,6 +115,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/agents'
     | '/_authenticated/dashboard'
+    | '/_authenticated/digital-self'
     | '/_authenticated/members'
     | '/_authenticated/organizations'
   fileRoutesById: FileRoutesById
@@ -139,6 +163,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/digital-self': {
+      id: '/_authenticated/digital-self'
+      path: '/digital-self'
+      fullPath: '/digital-self'
+      preLoaderRoute: typeof AuthenticatedDigitalSelfRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/members': {
       id: '/_authenticated/members'
       path: '/members'
@@ -159,6 +190,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAgentsRoute: typeof AuthenticatedAgentsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDigitalSelfRoute: typeof AuthenticatedDigitalSelfRoute
   AuthenticatedMembersRoute: typeof AuthenticatedMembersRoute
   AuthenticatedOrganizationsRoute: typeof AuthenticatedOrganizationsRoute
 }
@@ -166,6 +198,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAgentsRoute: AuthenticatedAgentsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDigitalSelfRoute: AuthenticatedDigitalSelfRoute,
   AuthenticatedMembersRoute: AuthenticatedMembersRoute,
   AuthenticatedOrganizationsRoute: AuthenticatedOrganizationsRoute,
 }
