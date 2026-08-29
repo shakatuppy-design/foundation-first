@@ -1,0 +1,11 @@
+REVOKE ALL ON FUNCTION public.controls_digital_profile(uuid) FROM anon;
+REVOKE ALL ON FUNCTION public.can_read_digital_profile(uuid) FROM anon;
+REVOKE ALL ON FUNCTION public.digital_profile_org(uuid) FROM anon;
+REVOKE ALL ON FUNCTION public.log_digital_self_event() FROM anon, authenticated, PUBLIC;
+REVOKE ALL ON FUNCTION public.digital_authority_apply_expiry() FROM anon, authenticated, PUBLIC;
+REVOKE ALL ON FUNCTION public.set_updated_at() FROM anon, authenticated, PUBLIC;
+REVOKE ALL ON FUNCTION public.handle_new_user() FROM anon, authenticated, PUBLIC;
+REVOKE ALL ON FUNCTION public.is_org_member(uuid) FROM anon;
+REVOKE ALL ON FUNCTION public.has_org_role(uuid, app_role[]) FROM anon;
+REVOKE ALL ON FUNCTION public.shares_organization(uuid) FROM anon;
+REVOKE ALL ON FUNCTION public.create_organization(text, text) FROM anon;

@@ -1,0 +1,16 @@
+REVOKE ALL ON public.digital_preferences FROM anon;
+REVOKE ALL ON public.digital_goals FROM anon;
+REVOKE ALL ON public.digital_memory_items FROM anon;
+REVOKE ALL ON public.digital_authority_rules FROM anon;
+REVOKE ALL ON public.digital_preferences FROM PUBLIC;
+REVOKE ALL ON public.digital_goals FROM PUBLIC;
+REVOKE ALL ON public.digital_memory_items FROM PUBLIC;
+REVOKE ALL ON public.digital_authority_rules FROM PUBLIC;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.digital_preferences TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.digital_goals TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.digital_memory_items TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.digital_authority_rules TO authenticated;
+GRANT ALL ON public.digital_preferences TO service_role;
+GRANT ALL ON public.digital_goals TO service_role;
+GRANT ALL ON public.digital_memory_items TO service_role;
+GRANT ALL ON public.digital_authority_rules TO service_role;

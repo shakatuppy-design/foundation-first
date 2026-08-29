@@ -145,6 +145,203 @@ export type Database = {
           },
         ]
       }
+      digital_authority_rules: {
+        Row: {
+          agent_id: string | null
+          allowed: boolean
+          capability: Database["public"]["Enums"]["digital_capability"]
+          created_at: string
+          digital_profile_id: string
+          expires_at: string | null
+          granted_by: string | null
+          id: string
+          organization_id: string
+          scope: Json
+          status: Database["public"]["Enums"]["digital_authority_status"]
+          updated_at: string
+        }
+        Insert: {
+          agent_id?: string | null
+          allowed?: boolean
+          capability: Database["public"]["Enums"]["digital_capability"]
+          created_at?: string
+          digital_profile_id: string
+          expires_at?: string | null
+          granted_by?: string | null
+          id?: string
+          organization_id: string
+          scope?: Json
+          status?: Database["public"]["Enums"]["digital_authority_status"]
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string | null
+          allowed?: boolean
+          capability?: Database["public"]["Enums"]["digital_capability"]
+          created_at?: string
+          digital_profile_id?: string
+          expires_at?: string | null
+          granted_by?: string | null
+          id?: string
+          organization_id?: string
+          scope?: Json
+          status?: Database["public"]["Enums"]["digital_authority_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_authority_rules_agent_org_fkey"
+            columns: ["agent_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "digital_authority_rules_digital_profile_id_fkey"
+            columns: ["digital_profile_id"]
+            isOneToOne: false
+            referencedRelation: "digital_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "digital_authority_rules_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "digital_authority_rules_profile_org_fkey"
+            columns: ["digital_profile_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "digital_profiles"
+            referencedColumns: ["id", "organization_id"]
+          },
+        ]
+      }
+      digital_goals: {
+        Row: {
+          created_at: string
+          description: string
+          digital_profile_id: string
+          id: string
+          priority: Database["public"]["Enums"]["digital_goal_priority"]
+          status: Database["public"]["Enums"]["digital_goal_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          digital_profile_id: string
+          id?: string
+          priority?: Database["public"]["Enums"]["digital_goal_priority"]
+          status?: Database["public"]["Enums"]["digital_goal_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          digital_profile_id?: string
+          id?: string
+          priority?: Database["public"]["Enums"]["digital_goal_priority"]
+          status?: Database["public"]["Enums"]["digital_goal_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_goals_digital_profile_id_fkey"
+            columns: ["digital_profile_id"]
+            isOneToOne: false
+            referencedRelation: "digital_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      digital_memory_items: {
+        Row: {
+          confidence: number
+          content: string
+          created_at: string
+          digital_profile_id: string
+          id: string
+          memory_type: string
+          source: string
+          updated_at: string
+          visibility: Database["public"]["Enums"]["digital_visibility"]
+        }
+        Insert: {
+          confidence?: number
+          content: string
+          created_at?: string
+          digital_profile_id: string
+          id?: string
+          memory_type?: string
+          source?: string
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["digital_visibility"]
+        }
+        Update: {
+          confidence?: number
+          content?: string
+          created_at?: string
+          digital_profile_id?: string
+          id?: string
+          memory_type?: string
+          source?: string
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["digital_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_memory_items_digital_profile_id_fkey"
+            columns: ["digital_profile_id"]
+            isOneToOne: false
+            referencedRelation: "digital_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      digital_preferences: {
+        Row: {
+          created_at: string
+          digital_profile_id: string
+          id: string
+          key: string
+          updated_at: string
+          value: string
+          visibility: Database["public"]["Enums"]["digital_visibility"]
+        }
+        Insert: {
+          created_at?: string
+          digital_profile_id: string
+          id?: string
+          key: string
+          updated_at?: string
+          value?: string
+          visibility?: Database["public"]["Enums"]["digital_visibility"]
+        }
+        Update: {
+          created_at?: string
+          digital_profile_id?: string
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: string
+          visibility?: Database["public"]["Enums"]["digital_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_preferences_digital_profile_id_fkey"
+            columns: ["digital_profile_id"]
+            isOneToOne: false
+            referencedRelation: "digital_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       digital_profiles: {
         Row: {
           created_at: string
@@ -152,9 +349,11 @@ export type Database = {
           id: string
           metadata: Json
           organization_id: string
-          owner_id: string | null
           profile_type: string
+          status: Database["public"]["Enums"]["digital_profile_status"]
           updated_at: string
+          user_id: string | null
+          visibility: Database["public"]["Enums"]["digital_visibility"]
         }
         Insert: {
           created_at?: string
@@ -162,9 +361,11 @@ export type Database = {
           id?: string
           metadata?: Json
           organization_id: string
-          owner_id?: string | null
           profile_type?: string
+          status?: Database["public"]["Enums"]["digital_profile_status"]
           updated_at?: string
+          user_id?: string | null
+          visibility?: Database["public"]["Enums"]["digital_visibility"]
         }
         Update: {
           created_at?: string
@@ -172,9 +373,11 @@ export type Database = {
           id?: string
           metadata?: Json
           organization_id?: string
-          owner_id?: string | null
           profile_type?: string
+          status?: Database["public"]["Enums"]["digital_profile_status"]
           updated_at?: string
+          user_id?: string | null
+          visibility?: Database["public"]["Enums"]["digital_visibility"]
         }
         Relationships: [
           {
@@ -277,6 +480,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_read_digital_profile: { Args: { _profile: string }; Returns: boolean }
+      controls_digital_profile: { Args: { _profile: string }; Returns: boolean }
       create_organization: {
         Args: { _name: string; _slug: string }
         Returns: {
@@ -294,6 +499,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      digital_profile_org: { Args: { _profile: string }; Returns: string }
       has_org_role: {
         Args: {
           _org: string
@@ -306,6 +512,25 @@ export type Database = {
     }
     Enums: {
       app_role: "owner" | "admin" | "member"
+      digital_authority_status: "active" | "revoked" | "expired"
+      digital_capability:
+        | "read_profile"
+        | "read_preference"
+        | "read_goal"
+        | "read_memory"
+        | "create_intent"
+        | "request_capability"
+        | "request_quote"
+        | "request_action"
+      digital_goal_priority: "low" | "medium" | "high" | "critical"
+      digital_goal_status:
+        | "draft"
+        | "active"
+        | "paused"
+        | "achieved"
+        | "abandoned"
+      digital_profile_status: "active" | "inactive" | "archived"
+      digital_visibility: "private" | "shared" | "public"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -434,6 +659,27 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["owner", "admin", "member"],
+      digital_authority_status: ["active", "revoked", "expired"],
+      digital_capability: [
+        "read_profile",
+        "read_preference",
+        "read_goal",
+        "read_memory",
+        "create_intent",
+        "request_capability",
+        "request_quote",
+        "request_action",
+      ],
+      digital_goal_priority: ["low", "medium", "high", "critical"],
+      digital_goal_status: [
+        "draft",
+        "active",
+        "paused",
+        "achieved",
+        "abandoned",
+      ],
+      digital_profile_status: ["active", "inactive", "archived"],
+      digital_visibility: ["private", "shared", "public"],
     },
   },
 } as const
