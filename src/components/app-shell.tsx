@@ -5,6 +5,7 @@ import {
   Building2,
   Check,
   ChevronsUpDown,
+  Fingerprint,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -27,6 +28,7 @@ import {
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/digital-self", label: "My Digital Self", icon: Fingerprint },
   { to: "/organizations", label: "Organizations", icon: Building2 },
   { to: "/members", label: "Members", icon: Users },
   { to: "/agents", label: "Agent Network", icon: Network },
@@ -153,7 +155,7 @@ export function AppShell({
         })}
       </nav>
       <p className="mt-auto px-2 text-xs leading-relaxed text-muted-foreground">
-        Core foundation · Session 1
+        Digital Self foundation · Session 2
       </p>
     </div>
   );
