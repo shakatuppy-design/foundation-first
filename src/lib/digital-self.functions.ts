@@ -2,6 +2,14 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
 export type DigitalVisibility = "private" | "shared" | "public";
 export type DigitalProfileStatus = "active" | "inactive" | "archived";
 export type DigitalCapability =
@@ -22,7 +30,7 @@ export type DigitalSelfProfile = {
   profile_type: string;
   status: DigitalProfileStatus;
   visibility: DigitalVisibility;
-  metadata: unknown;
+  metadata: JsonValue;
   created_at: string;
   updated_at: string;
 };
@@ -56,7 +64,7 @@ export type DigitalAuthorityRule = {
   capability: DigitalCapability;
   agent_id: string | null;
   allowed: boolean;
-  scope: unknown;
+  scope: JsonValue;
   expires_at: string | null;
   status: "active" | "revoked" | "expired";
   granted_by: string | null;
@@ -189,10 +197,14 @@ export const updateMyDigitalSelf = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const patch: Record<string, unknown> = {};
-    if (data.displayName !== undefined) patch["display_name"] = data.displayName;
-    if (data.status !== undefined) patch["status"] = data.status;
-    if (data.visibility !== undefined) patch["visibility"] = data.visibility;
+    const patch: {
+      display_name?: string;
+      status?: "active" | "inactive" | "archived";
+      visibility?: "private" | "shared" | "public";
+    } = {};
+    if (data.displayName !== undefined) patch.display_name = data.displayName;
+    if (data.status !== undefined) patch.status = data.status;
+    if (data.visibility !== undefined) patch.visibility = data.visibility;
 
     const { error } = await context.supabase
       .from("digital_profiles")
