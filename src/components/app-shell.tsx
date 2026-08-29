@@ -195,9 +195,7 @@ export function AppShell({
           </Button>
           <div className="min-w-0 flex-1">
             <h1 className="truncate text-base font-semibold text-foreground">{title}</h1>
-            {description && (
-              <p className="truncate text-xs text-muted-foreground">{description}</p>
-            )}
+            {description && <p className="truncate text-xs text-muted-foreground">{description}</p>}
           </div>
           <UserMenu />
         </header>

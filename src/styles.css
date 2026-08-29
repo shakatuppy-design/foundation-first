@@ -65,8 +65,7 @@
 
 :root {
   --radius: 0.5rem;
-  --font-sans:
-    "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --background: oklch(0.995 0.002 250);
   --foreground: oklch(0.21 0.025 250);
   --card: oklch(1 0 0);
@@ -100,7 +99,6 @@
   --sidebar-border: oklch(0.912 0.01 250);
   --sidebar-ring: oklch(0.42 0.1 245);
 }
-
 
 .dark {
   --background: oklch(0.129 0.042 264.695);

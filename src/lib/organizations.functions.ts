@@ -78,9 +78,7 @@ export const createOrganization = createServerFn({ method: "POST" })
 
 export const listOrganizationMembers = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) =>
-    z.object({ organizationId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input: unknown) => z.object({ organizationId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }): Promise<OrgMember[]> => {
     const { data: members, error } = await context.supabase
       .from("organization_members")
@@ -112,9 +110,7 @@ export const listOrganizationMembers = createServerFn({ method: "POST" })
 
 export const getOrganizationOverview = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) =>
-    z.object({ organizationId: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input: unknown) => z.object({ organizationId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const orgId = data.organizationId;
     const [members, digitalProfiles, agents, logs] = await Promise.all([
