@@ -5,6 +5,8 @@ import { ArrowLeft, Loader2, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { RouteError, RouteNotFound } from "@/components/route-error";
 import { AgentStatusBadge } from "@/components/agent-status-badge";
+import { AgentDiscoverySection } from "@/components/agent-discovery-section";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -219,6 +221,15 @@ function AgentDetailPage() {
                 )}
               </CardContent>
             </Card>
+
+            <AgentDiscoverySection
+              agentId={data.agent.id}
+              organizationId={data.agent.organization_id}
+              agentName={data.agent.name}
+              canManage={data.canManage}
+            />
+
+
 
             <Card>
               <CardHeader>

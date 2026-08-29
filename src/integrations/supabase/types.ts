@@ -59,6 +59,73 @@ export type Database = {
           },
         ]
       }
+      agent_discovery_profiles: {
+        Row: {
+          agent_id: string
+          capabilities: string[]
+          categories: string[]
+          created_at: string
+          description: string
+          discovery_id: string
+          display_name: string
+          id: string
+          organization_id: string
+          status: Database["public"]["Enums"]["discovery_status"]
+          updated_at: string
+          visibility: Database["public"]["Enums"]["discovery_visibility"]
+        }
+        Insert: {
+          agent_id: string
+          capabilities?: string[]
+          categories?: string[]
+          created_at?: string
+          description?: string
+          discovery_id?: string
+          display_name: string
+          id?: string
+          organization_id: string
+          status?: Database["public"]["Enums"]["discovery_status"]
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["discovery_visibility"]
+        }
+        Update: {
+          agent_id?: string
+          capabilities?: string[]
+          categories?: string[]
+          created_at?: string
+          description?: string
+          discovery_id?: string
+          display_name?: string
+          id?: string
+          organization_id?: string
+          status?: Database["public"]["Enums"]["discovery_status"]
+          updated_at?: string
+          visibility?: Database["public"]["Enums"]["discovery_visibility"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_discovery_profiles_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: true
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_discovery_profiles_agent_org_fkey"
+            columns: ["agent_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "agent_discovery_profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_permissions: {
         Row: {
           agent_id: string
@@ -259,6 +326,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "digital_goals_digital_profile_id_fkey"
+            columns: ["digital_profile_id"]
+            isOneToOne: false
+            referencedRelation: "digital_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      digital_intents: {
+        Row: {
+          created_at: string
+          description: string
+          digital_profile_id: string
+          discovery_requirement: Json
+          id: string
+          intent_type: Database["public"]["Enums"]["digital_intent_type"]
+          priority: Database["public"]["Enums"]["digital_intent_priority"]
+          status: Database["public"]["Enums"]["digital_intent_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          digital_profile_id: string
+          discovery_requirement?: Json
+          id?: string
+          intent_type?: Database["public"]["Enums"]["digital_intent_type"]
+          priority?: Database["public"]["Enums"]["digital_intent_priority"]
+          status?: Database["public"]["Enums"]["digital_intent_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          digital_profile_id?: string
+          discovery_requirement?: Json
+          id?: string
+          intent_type?: Database["public"]["Enums"]["digital_intent_type"]
+          priority?: Database["public"]["Enums"]["digital_intent_priority"]
+          status?: Database["public"]["Enums"]["digital_intent_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_intents_digital_profile_id_fkey"
             columns: ["digital_profile_id"]
             isOneToOne: false
             referencedRelation: "digital_profiles"
@@ -515,6 +629,7 @@ export type Database = {
         }
       }
       digital_profile_org: { Args: { _profile: string }; Returns: string }
+      generate_discovery_id: { Args: never; Returns: string }
       has_org_role: {
         Args: {
           _org: string
@@ -544,8 +659,25 @@ export type Database = {
         | "paused"
         | "achieved"
         | "abandoned"
+      digital_intent_priority: "low" | "medium" | "high" | "critical"
+      digital_intent_status:
+        | "draft"
+        | "active"
+        | "paused"
+        | "fulfilled"
+        | "cancelled"
+        | "expired"
+      digital_intent_type:
+        | "general"
+        | "discovery"
+        | "procurement"
+        | "logistics"
+        | "service"
+        | "research"
       digital_profile_status: "active" | "inactive" | "archived"
       digital_visibility: "private" | "shared" | "public"
+      discovery_status: "draft" | "listed" | "delisted"
+      discovery_visibility: "private" | "unlisted" | "public"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -693,8 +825,27 @@ export const Constants = {
         "achieved",
         "abandoned",
       ],
+      digital_intent_priority: ["low", "medium", "high", "critical"],
+      digital_intent_status: [
+        "draft",
+        "active",
+        "paused",
+        "fulfilled",
+        "cancelled",
+        "expired",
+      ],
+      digital_intent_type: [
+        "general",
+        "discovery",
+        "procurement",
+        "logistics",
+        "service",
+        "research",
+      ],
       digital_profile_status: ["active", "inactive", "archived"],
       digital_visibility: ["private", "shared", "public"],
+      discovery_status: ["draft", "listed", "delisted"],
+      discovery_visibility: ["private", "unlisted", "public"],
     },
   },
 } as const

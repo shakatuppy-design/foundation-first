@@ -5,6 +5,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { Fingerprint, Loader2, ShieldCheck, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { RouteError, RouteNotFound } from "@/components/route-error";
+import { IntentsSection } from "@/components/intents-section";
+
 import { useOrganizations } from "@/lib/org-context";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -204,6 +206,7 @@ function DigitalSelfPage() {
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="preferences">Preferences</TabsTrigger>
             <TabsTrigger value="goals">Goals</TabsTrigger>
+            <TabsTrigger value="intents">Intents</TabsTrigger>
             <TabsTrigger value="memory">Memory</TabsTrigger>
             <TabsTrigger value="privacy">Privacy</TabsTrigger>
             <TabsTrigger value="authority">Authority</TabsTrigger>
@@ -217,6 +220,9 @@ function DigitalSelfPage() {
           <TabsContent value="goals" className="mt-4">
             <GoalsSection bundle={bundle} onChanged={invalidate} />
           </TabsContent>
+          <TabsContent value="intents" className="mt-4">
+            <IntentsSection profileId={bundle.profile.id} />
+          </TabsContent>
           <TabsContent value="memory" className="mt-4">
             <MemorySection bundle={bundle} onChanged={invalidate} />
           </TabsContent>
@@ -227,6 +233,7 @@ function DigitalSelfPage() {
             <AuthoritySection bundle={bundle} onChanged={invalidate} />
           </TabsContent>
         </Tabs>
+
       </div>
     </AppShell>
   );
