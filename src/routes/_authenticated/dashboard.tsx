@@ -33,7 +33,7 @@ function DashboardPage() {
   const { activeOrg, isLoading } = useOrganizations();
   const fetchOverview = useServerFn(getOrganizationOverview);
 
-  const { data } = useQuery({
+  const { data, isError, error } = useQuery({
     queryKey: ["org-overview", activeOrg?.id],
     queryFn: () => fetchOverview({ data: { organizationId: activeOrg!.id } }),
     enabled: Boolean(activeOrg?.id),
@@ -51,7 +51,16 @@ function DashboardPage() {
       title="Dashboard"
       description={activeOrg ? `${activeOrg.name} · ${activeOrg.role}` : "No active organization"}
     >
-      {!isLoading && !activeOrg ? (
+      {isError ? (
+        <Card className="max-w-xl">
+          <CardHeader>
+            <CardTitle>Could not load overview</CardTitle>
+            <CardDescription>
+              {(error as Error)?.message ?? "Please try again in a moment."}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      ) : !isLoading && !activeOrg ? (
         <Card className="max-w-xl">
           <CardHeader>
             <CardTitle>Create your first organization</CardTitle>

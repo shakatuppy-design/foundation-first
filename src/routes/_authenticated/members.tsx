@@ -40,7 +40,7 @@ function MembersPage() {
   const { activeOrg } = useOrganizations();
   const fetchMembers = useServerFn(listOrganizationMembers);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["org-members", activeOrg?.id],
     queryFn: () => fetchMembers({ data: { organizationId: activeOrg!.id } }),
     enabled: Boolean(activeOrg?.id),
@@ -59,6 +59,14 @@ function MembersPage() {
         <CardContent>
           {!activeOrg && <p className="text-sm text-muted-foreground">Select an organization.</p>}
           {activeOrg && isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+          {activeOrg && isError && (
+            <p className="text-sm text-destructive">
+              {(error as Error)?.message ?? "Could not load members."}
+            </p>
+          )}
+          {activeOrg && !isLoading && !isError && data?.length === 0 && (
+            <p className="text-sm text-muted-foreground">No members yet.</p>
+          )}
           {activeOrg && data && (
             <Table>
               <TableHeader>

@@ -29,7 +29,7 @@ Not yet exercised live: ADMIN and MEMBER behaviour (this environment can only mi
 - RLS enabled on all 7 tables; every policy is scoped `TO authenticated`; `organizations` has no INSERT policy (creation only through the server-side function); the activity log has no UPDATE/DELETE policy (append-only).
 - `USING (true)` appears once: `profiles` SELECT. Any signed-in user can read every user's name and avatar — cross-tenant user enumeration.
 - `WITH CHECK (true)`: none.
-- Weak checks found: member-role UPDATE does not restrict the *new* role value; `agent_permissions` and `agent_activity_logs` do not verify that the referenced agent belongs to the claimed organization.
+- Weak checks found: member-role UPDATE does not restrict the _new_ role value; `agent_permissions` and `agent_activity_logs` do not verify that the referenced agent belongs to the claimed organization.
 
 ## 5. Roles
 
@@ -46,6 +46,7 @@ The path to Digital Self → Agent → Capability → Trust → Intent → Deleg
 ## 8. Red team results
 
 Reachable as an ordinary signed-in user today:
+
 - Read another tenant's data — blocked (verified).
 - Modify another tenant's data — blocked (verified).
 - Forge `organization_id` on insert — blocked (verified).
@@ -61,38 +62,30 @@ Responsive (fixed sidebar at large widths, drawer with labelled toggle below), n
 
 ## 10. Scores
 
-| Area | Score |
-| --- | --- |
-| Architecture | 88 |
-| Database | 86 |
-| Security | 74 |
-| RLS | 76 |
-| Authentication | 92 |
-| Multi-tenancy | 84 |
-| Scalability | 85 |
-| Maintainability | 88 |
-| UI | 82 |
+| Area            | Score |
+| --------------- | ----- |
+| Architecture    | 88    |
+| Database        | 86    |
+| Security        | 74    |
+| RLS             | 76    |
+| Authentication  | 92    |
+| Multi-tenancy   | 84    |
+| Scalability     | 85    |
+| Maintainability | 88    |
+| UI              | 82    |
 
 ## 11. Red flags
 
 CRITICAL — none.
 
 HIGH
+
 1. Privilege escalation: an admin can set a member row's role to `owner` (including their own).
 2. The anonymous role holds full table privileges on all 7 tables; only the `TO authenticated` policies stop it — one layer, no defence in depth.
 
-MEDIUM
-3. `profiles` is world-readable to any signed-in user (cross-tenant enumeration).
-4. No database-level guarantee that `agent_permissions.organization_id` / `agent_activity_logs.organization_id` matches the agent's organization.
-5. Members can update or insert any digital profile in the organization, including other people's.
-6. `agent_activity_logs.actor_id` may be NULL, allowing unattributable entries.
-7. Role behaviour for admin and member never exercised at runtime.
+MEDIUM 3. `profiles` is world-readable to any signed-in user (cross-tenant enumeration). 4. No database-level guarantee that `agent_permissions.organization_id` / `agent_activity_logs.organization_id` matches the agent's organization. 5. Members can update or insert any digital profile in the organization, including other people's. 6. `agent_activity_logs.actor_id` may be NULL, allowing unattributable entries. 7. Role behaviour for admin and member never exercised at runtime.
 
-LOW
-8. No CHECK constraints on status/kind/type/slug.
-9. No per-route error boundaries; missing query-error UI.
-10. Stale dashboard counters right after first organization creation.
-11. Three accepted security-definer linter warnings (documented in security memory).
+LOW 8. No CHECK constraints on status/kind/type/slug. 9. No per-route error boundaries; missing query-error UI. 10. Stale dashboard counters right after first organization creation. 11. Three accepted security-definer linter warnings (documented in security memory).
 
 ## 12. Verdict
 
@@ -101,6 +94,7 @@ LOW
 ### Mandatory fix list (Session 1.1)
 
 Database migration:
+
 1. Rewrite the member UPDATE policy so the resulting role can only be `owner` when the actor is an owner, and keep admins from touching owner rows.
 2. Revoke `SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER` on all 7 tables from the anonymous role.
 3. Replace `profiles` world-read with a policy limited to your own row plus users who share an organization with you (helper function).
@@ -109,11 +103,8 @@ Database migration:
 6. Make `agent_activity_logs.actor_id` default to `auth.uid()` and require it to equal `auth.uid()` for user-originated inserts.
 7. Add CHECK constraints for `agents.status`, `agents.kind`, `digital_profiles.profile_type`, and a slug format/length check on `organizations`; validate the slug inside `create_organization` too.
 
-Application:
-8. Add `errorComponent` to each authenticated route and visible error states for the members and dashboard queries.
-9. Invalidate the organization-overview query after organization creation so counters are never stale.
+Application: 8. Add `errorComponent` to each authenticated route and visible error states for the members and dashboard queries. 9. Invalidate the organization-overview query after organization creation so counters are never stale.
 
-Verification after fixes:
-10. Re-run the cross-tenant probe, plus explicit admin-escalation and member-write attempts, and re-run the database linter.
+Verification after fixes: 10. Re-run the cross-tenant probe, plus explicit admin-escalation and member-write attempts, and re-run the database linter.
 
 Once these pass, the recommended next step is **SESSION 2 — DIGITAL SELF**.
