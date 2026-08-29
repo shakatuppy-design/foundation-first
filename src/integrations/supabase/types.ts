@@ -44,11 +44,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "agent_activity_logs_agent_id_fkey"
-            columns: ["agent_id"]
+            foreignKeyName: "agent_activity_logs_agent_org_fkey"
+            columns: ["agent_id", "organization_id"]
             isOneToOne: false
             referencedRelation: "agents"
-            referencedColumns: ["id"]
+            referencedColumns: ["id", "organization_id"]
           },
           {
             foreignKeyName: "agent_activity_logs_organization_id_fkey"
@@ -89,11 +89,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "agent_permissions_agent_id_fkey"
-            columns: ["agent_id"]
+            foreignKeyName: "agent_permissions_agent_org_fkey"
+            columns: ["agent_id", "organization_id"]
             isOneToOne: false
             referencedRelation: "agents"
-            referencedColumns: ["id"]
+            referencedColumns: ["id", "organization_id"]
           },
           {
             foreignKeyName: "agent_permissions_organization_id_fkey"
@@ -302,6 +302,7 @@ export type Database = {
         Returns: boolean
       }
       is_org_member: { Args: { _org: string }; Returns: boolean }
+      shares_organization: { Args: { _user: string }; Returns: boolean }
     }
     Enums: {
       app_role: "owner" | "admin" | "member"
