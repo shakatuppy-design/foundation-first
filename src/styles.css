@@ -143,6 +143,8 @@
   }
 
   body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
