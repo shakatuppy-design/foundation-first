@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedAgentsRouteImport } from './routes/_authenticated/agents'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDigitalSelfRouteImport } from './routes/_authenticated/digital-self'
 import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
@@ -33,11 +32,6 @@ const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedAgentsRoute = AuthenticatedAgentsRouteImport.update({
-  id: '/agents',
-  path: '/agents',
-  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -63,21 +57,20 @@ const AuthenticatedOrganizationsRoute =
   } as any)
 const AuthenticatedAgentsIndexRoute =
   AuthenticatedAgentsIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedAgentsRoute,
+    id: '/agents/',
+    path: '/agents/',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedAgentsAgentIdRoute =
   AuthenticatedAgentsAgentIdRouteImport.update({
-    id: '/$agentId',
-    path: '/$agentId',
-    getParentRoute: () => AuthenticatedAgentsRoute,
+    id: '/agents/$agentId',
+    path: '/agents/$agentId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/agents': typeof AuthenticatedAgentsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/digital-self': typeof AuthenticatedDigitalSelfRoute
   '/members': typeof AuthenticatedMembersRoute
@@ -100,7 +93,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/_authenticated/agents': typeof AuthenticatedAgentsRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/digital-self': typeof AuthenticatedDigitalSelfRoute
   '/_authenticated/members': typeof AuthenticatedMembersRoute
@@ -113,7 +105,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/agents'
     | '/dashboard'
     | '/digital-self'
     | '/members'
@@ -135,7 +126,6 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
-    | '/_authenticated/agents'
     | '/_authenticated/dashboard'
     | '/_authenticated/digital-self'
     | '/_authenticated/members'
@@ -173,13 +163,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/agents': {
-      id: '/_authenticated/agents'
-      path: '/agents'
-      fullPath: '/agents'
-      preLoaderRoute: typeof AuthenticatedAgentsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -210,48 +193,37 @@ declare module '@tanstack/react-router' {
     }
     '/_authenticated/agents/': {
       id: '/_authenticated/agents/'
-      path: '/'
+      path: '/agents'
       fullPath: '/agents/'
       preLoaderRoute: typeof AuthenticatedAgentsIndexRouteImport
-      parentRoute: typeof AuthenticatedAgentsRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/agents/$agentId': {
       id: '/_authenticated/agents/$agentId'
-      path: '/$agentId'
+      path: '/agents/$agentId'
       fullPath: '/agents/$agentId'
       preLoaderRoute: typeof AuthenticatedAgentsAgentIdRouteImport
-      parentRoute: typeof AuthenticatedAgentsRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
-interface AuthenticatedAgentsRouteChildren {
-  AuthenticatedAgentsAgentIdRoute: typeof AuthenticatedAgentsAgentIdRoute
-  AuthenticatedAgentsIndexRoute: typeof AuthenticatedAgentsIndexRoute
-}
-
-const AuthenticatedAgentsRouteChildren: AuthenticatedAgentsRouteChildren = {
-  AuthenticatedAgentsAgentIdRoute: AuthenticatedAgentsAgentIdRoute,
-  AuthenticatedAgentsIndexRoute: AuthenticatedAgentsIndexRoute,
-}
-
-const AuthenticatedAgentsRouteWithChildren =
-  AuthenticatedAgentsRoute._addFileChildren(AuthenticatedAgentsRouteChildren)
-
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAgentsRoute: typeof AuthenticatedAgentsRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDigitalSelfRoute: typeof AuthenticatedDigitalSelfRoute
   AuthenticatedMembersRoute: typeof AuthenticatedMembersRoute
   AuthenticatedOrganizationsRoute: typeof AuthenticatedOrganizationsRoute
+  AuthenticatedAgentsAgentIdRoute: typeof AuthenticatedAgentsAgentIdRoute
+  AuthenticatedAgentsIndexRoute: typeof AuthenticatedAgentsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAgentsRoute: AuthenticatedAgentsRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDigitalSelfRoute: AuthenticatedDigitalSelfRoute,
   AuthenticatedMembersRoute: AuthenticatedMembersRoute,
   AuthenticatedOrganizationsRoute: AuthenticatedOrganizationsRoute,
+  AuthenticatedAgentsAgentIdRoute: AuthenticatedAgentsAgentIdRoute,
+  AuthenticatedAgentsIndexRoute: AuthenticatedAgentsIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
