@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 import { useOrganizations } from "@/lib/org-context";
 import { createOrganization } from "@/lib/organizations.functions";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,8 @@ export const Route = createFileRoute("/_authenticated/organizations")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  errorComponent: ({ error }) => <RouteError error={error as Error} />,
+  notFoundComponent: RouteNotFound,
   component: OrganizationsPage,
 });
 
@@ -41,6 +44,7 @@ function slugify(value: string) {
 function OrganizationsPage() {
   const { organizations, activeOrg, setActiveOrgId, refresh, isLoading } = useOrganizations();
   const create = useServerFn(createOrganization);
+  const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
 
@@ -52,6 +56,8 @@ function OrganizationsPage() {
       setSlug("");
       refresh();
       setActiveOrgId(org.id);
+      void queryClient.invalidateQueries({ queryKey: ["org-overview"] });
+      void queryClient.invalidateQueries({ queryKey: ["org-members"] });
     },
     onError: (error: Error) => toast.error(error.message),
   });

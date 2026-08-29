@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Building2, Network, ShieldCheck, Users } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 import { useOrganizations } from "@/lib/org-context";
 import { getOrganizationOverview } from "@/lib/organizations.functions";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +24,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  errorComponent: ({ error }) => <RouteError error={error as Error} />,
+  notFoundComponent: RouteNotFound,
   component: DashboardPage,
 });
 
@@ -30,7 +33,7 @@ function DashboardPage() {
   const { activeOrg, isLoading } = useOrganizations();
   const fetchOverview = useServerFn(getOrganizationOverview);
 
-  const { data } = useQuery({
+  const { data, isError, error } = useQuery({
     queryKey: ["org-overview", activeOrg?.id],
     queryFn: () => fetchOverview({ data: { organizationId: activeOrg!.id } }),
     enabled: Boolean(activeOrg?.id),
@@ -48,7 +51,16 @@ function DashboardPage() {
       title="Dashboard"
       description={activeOrg ? `${activeOrg.name} · ${activeOrg.role}` : "No active organization"}
     >
-      {!isLoading && !activeOrg ? (
+      {isError ? (
+        <Card className="max-w-xl">
+          <CardHeader>
+            <CardTitle>Could not load overview</CardTitle>
+            <CardDescription>
+              {(error as Error)?.message ?? "Please try again in a moment."}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      ) : !isLoading && !activeOrg ? (
         <Card className="max-w-xl">
           <CardHeader>
             <CardTitle>Create your first organization</CardTitle>

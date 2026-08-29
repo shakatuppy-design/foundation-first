@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Network } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { RouteError, RouteNotFound } from "@/components/route-error";
 import { useOrganizations } from "@/lib/org-context";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +21,8 @@ export const Route = createFileRoute("/_authenticated/agents")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  errorComponent: ({ error }) => <RouteError error={error as Error} />,
+  notFoundComponent: RouteNotFound,
   component: AgentsPage,
 });
 
