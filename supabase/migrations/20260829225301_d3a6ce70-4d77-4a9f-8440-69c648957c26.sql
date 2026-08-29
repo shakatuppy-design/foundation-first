@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.generate_discovery_id() FROM PUBLIC, anon, authenticated;
