@@ -24,25 +24,39 @@ No new permission table, no discovery↔digital_profile ownership link, no dupli
 - Intent belongs to a Digital Self; write/read control uses existing `controls_digital_profile()` only. Personal intents: only that person. Organization/business: org owner/admin. No admin access to personal intents.
 - Discovery profile belongs to an Agent, so it follows agent write rules: org owner/admin of the agent's organization. `created_by`-style creator does not grant authority.
 
-## 4. Discovery identity model
+## 4. Discovery identity model (experimental only)
 
-`discovery_id` format `lg_<26 chars base32 of gen_random_bytes(16)>` produced by a `SECURITY DEFINER`-free SQL default helper `public.generate_discovery_id()`. Random, globally unique (UNIQUE constraint + retry-free 128-bit entropy), non-sequential, unrelated to email/phone/auth user id. Documented as an experimental identity primitive, not a phone-number replacement.
+`discovery_id` format `lg_<base32 of gen_random_bytes(16)>`, produced by a plain (non-SECURITY-DEFINER) `IMMUTABLE`/`VOLATILE` SQL helper used as the column default. Random, globally unique (UNIQUE constraint, 128-bit entropy), non-sequential, and not derived from email, phone, or auth user id.
 
-## 5. Privacy model
+Explicitly scoped: it is an **experimental, non-sensitive lookup handle only**. It is NOT an "AI address", NOT a phone-number replacement, NOT a universal identity, and NOT a communication protocol endpoint. Nothing is routed, addressed, or invoked through it in this or any planned session of 3B. The model stays open to replacing or supplementing it later: identifiers live in their own column on a discovery-only table, nothing else foreign-keys to the string, and additional identifier schemes can be added later without touching Digital Self, agents, or authority. UI and code comments will carry this caveat.
+
+## 5. Discovery metadata semantics (advertised ≠ verified ≠ authorized)
+
+`categories` and `capabilities` are self-declared advertising metadata set by the agent's org owner/admin. They carry no trust, no verification, no ownership claim, and no permission. Three distinct layers, documented in the migration comments, the server functions, and the UI:
+
+- **Advertised capability** — "this agent claims it may be relevant" (this table).
+- **Verified capability** — not built; no verification, proof, reputation, or trust signal exists in this session.
+- **Authority** — only `digital_authority_rules` + `agent_has_authority()`; the sole thing that permits an agent to act for a Digital Self.
+
+No code path reads discovery metadata to make an access, authority, or trust decision.
+
+## 6. Privacy model
 
 - Discovery exposes only: discovery_id, display_name, agent kind, categories, capabilities, visibility, status. Never human name, email, phone, memory, goals, preferences, authority rules, or org-private data.
-- private: not discoverable at all. unlisted: only returned on exact `discovery_id` match. public: returned by search, and only when the agent's status is `active`.
+- private: not discoverable at all. unlisted: reachable only by exact `discovery_id` lookup. public: returned by search, and only when the agent's status is `active`.
 - Discovery visibility is independent of Digital Self visibility; nothing in the discovery path reads Digital Self tables.
 
-## 6. RLS model (deny-by-default, no anon grants)
+## 7. RLS model (deny-by-default, no anon grants, no new SECURITY DEFINER)
 
-`digital_intents`: GRANT to authenticated + service_role only; all four commands via `controls_digital_profile(digital_profile_id)`.
+`digital_intents`: GRANT to authenticated + service_role only; all four commands via the existing `controls_digital_profile(digital_profile_id)`.
 
 `agent_discovery_profiles`: GRANT to authenticated + service_role only.
-- SELECT: org members of the agent's org (management view) OR `visibility = 'public' AND agent is active` (cross-tenant discovery of safe fields only, still authenticated).
+- SELECT: org members of the agent's org (management view) OR `visibility IN ('public','unlisted') AND the agent is active` (discovery view — rows contain only discovery-safe fields).
 - INSERT/UPDATE/DELETE: `has_org_role(organization_id, ARRAY['owner','admin'])`.
-- Unlisted lookups go through a `SECURITY DEFINER` function `public.lookup_discovery(_discovery_id text)` returning only safe columns for public+unlisted active agents — execute granted to `authenticated` only. Enumeration is impractical because the identifier is 128-bit random and the function requires an exact match.
+
+**On SECURITY DEFINER (revised):** the previously proposed `lookup_discovery()` definer function is dropped. Its only purpose was to hide unlisted rows from listing while allowing exact-identifier lookup — an ordinary RLS policy cannot see the caller's WHERE clause, so enforcing "exact match only" in the database would have required a definer function. That is not worth a new privileged surface, because the rows are discovery-safe by construction. Instead: unlisted rows are covered by a normal authenticated RLS policy, and the "exact identifier only" rule is enforced in the search server function, which never returns unlisted rows for name/category/capability queries — only for a full `discovery_id` equality match. This is a UX/obscurity boundary, not a security boundary; the real protection for unlisted is that the 128-bit identifier is unguessable, plus the fact that the data is non-sensitive. No new SECURITY DEFINER functions are introduced in Session 3B.
 - Anonymous: no grants, no policies. Discovery stays authenticated-only, matching the existing model.
+
 
 ## 7. Intent model
 
