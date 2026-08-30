@@ -3,6 +3,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Building2,
+  FileSignature,
   Check,
   ChevronsUpDown,
   Fingerprint,
@@ -39,6 +40,7 @@ const nav = [
   { to: "/discovery", label: "Discovery", icon: Radar },
   { to: "/requests", label: "My Requests", icon: Send },
   { to: "/review-requests", label: "Capability Requests", icon: ShieldQuestion },
+  { to: "/contracts", label: "Contracts", icon: FileSignature },
 ] as const;
 
 function OrganizationSelector() {

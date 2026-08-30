@@ -6,6 +6,8 @@ import { AppShell } from "@/components/app-shell";
 import { RouteError, RouteNotFound } from "@/components/route-error";
 import { AgentStatusBadge } from "@/components/agent-status-badge";
 import { AgentDiscoverySection } from "@/components/agent-discovery-section";
+import { AgentAttestationsSection } from "@/components/agent-attestations-section";
+import { CapabilityTrustLegend } from "@/components/capability-trust-legend";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -229,7 +231,19 @@ function AgentDetailPage() {
               canManage={data.canManage}
             />
 
+            <AgentAttestationsSection agentId={data.agent.id} canManage={data.canManage} />
 
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Capability trust layers</CardTitle>
+                <CardDescription>
+                  Advertised, self-attested, contracted and authorized are four separate things.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <CapabilityTrustLegend />
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
