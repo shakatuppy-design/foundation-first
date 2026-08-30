@@ -18,6 +18,7 @@ import {
   decideContractStatus,
   listControlledProfileIds,
   resolveAgentOrganization,
+  resolveCurrentVerification,
   resolveOrgRole,
   resolveVerificationTarget,
 } from "@/lib/capability-access.server";
@@ -38,7 +39,7 @@ export const createContractDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z
       .object({
-        verificationId: z.string().uuid(),
+        verificationId: z.string().trim().min(3).max(80),
         requesterProfileId: z.string().uuid(),
         capabilityRequestId: z.string().uuid().nullish(),
         ...contractTermsShape,
@@ -113,7 +114,6 @@ export const createContractVersion = createServerFn({ method: "POST" })
     z
       .object({
         supersedesContractId: z.string().uuid(),
-        verificationId: z.string().uuid(),
         ...contractTermsShape,
       })
       .parse(input),
@@ -138,20 +138,21 @@ export const createContractVersion = createServerFn({ method: "POST" })
       | undefined;
     if (!parent) throw new Error(E_VERSION);
 
-    const target = await resolveVerificationTarget(context.supabase as never, data.verificationId);
-    if (
-      target.agent_id !== parent.agent_id ||
-      target.organization_id !== parent.organization_id ||
-      target.capability_key !== parent.capability_key
-    ) {
-      throw new Error(E_VERSION);
-    }
+    // Parties, capability and the referenced attestation are all derived from
+    // the predecessor; the client cannot substitute any of them, and the DB
+    // guard re-validates the whole chain under a lock.
+    const verificationId = await resolveCurrentVerification(
+      context.supabase as never,
+      parent.agent_id,
+      parent.organization_id,
+      parent.capability_key,
+    );
 
     const { error } = await context.supabase.from("agent_capability_contracts").insert({
       agent_id: parent.agent_id,
       organization_id: parent.organization_id,
       capability_key: parent.capability_key,
-      verification_id: target.id,
+      verification_id: verificationId,
       requester_digital_profile_id: parent.requester_digital_profile_id,
       supersedes_contract_id: parent.id,
       version: parent.version + 1,
