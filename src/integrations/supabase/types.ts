@@ -59,6 +59,152 @@ export type Database = {
           },
         ]
       }
+      agent_capability_contracts: {
+        Row: {
+          accepted_at: string | null
+          agent_id: string
+          allowed_data: string[]
+          capability_key: string
+          capability_request_id: string | null
+          constraints: Json
+          contract_id: string
+          created_at: string
+          created_by: string | null
+          decided_by: string | null
+          decision_note: string | null
+          effective_from: string | null
+          expired_at: string | null
+          expires_at: string | null
+          id: string
+          limits: Json
+          organization_id: string
+          prohibited_data: string[]
+          proposed_at: string | null
+          rejected_at: string | null
+          requester_digital_profile_id: string
+          requester_note: string | null
+          revoked_at: string | null
+          scope: Json
+          status: Database["public"]["Enums"]["capability_contract_status"]
+          supersedes_contract_id: string | null
+          updated_at: string
+          verification_id: string
+          version: number
+        }
+        Insert: {
+          accepted_at?: string | null
+          agent_id: string
+          allowed_data?: string[]
+          capability_key: string
+          capability_request_id?: string | null
+          constraints?: Json
+          contract_id?: string
+          created_at?: string
+          created_by?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          effective_from?: string | null
+          expired_at?: string | null
+          expires_at?: string | null
+          id?: string
+          limits?: Json
+          organization_id: string
+          prohibited_data?: string[]
+          proposed_at?: string | null
+          rejected_at?: string | null
+          requester_digital_profile_id: string
+          requester_note?: string | null
+          revoked_at?: string | null
+          scope?: Json
+          status?: Database["public"]["Enums"]["capability_contract_status"]
+          supersedes_contract_id?: string | null
+          updated_at?: string
+          verification_id: string
+          version?: number
+        }
+        Update: {
+          accepted_at?: string | null
+          agent_id?: string
+          allowed_data?: string[]
+          capability_key?: string
+          capability_request_id?: string | null
+          constraints?: Json
+          contract_id?: string
+          created_at?: string
+          created_by?: string | null
+          decided_by?: string | null
+          decision_note?: string | null
+          effective_from?: string | null
+          expired_at?: string | null
+          expires_at?: string | null
+          id?: string
+          limits?: Json
+          organization_id?: string
+          prohibited_data?: string[]
+          proposed_at?: string | null
+          rejected_at?: string | null
+          requester_digital_profile_id?: string
+          requester_note?: string | null
+          revoked_at?: string | null
+          scope?: Json
+          status?: Database["public"]["Enums"]["capability_contract_status"]
+          supersedes_contract_id?: string | null
+          updated_at?: string
+          verification_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acc_agent_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acc_agent_org_fkey"
+            columns: ["agent_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "acc_capability_request_fkey"
+            columns: ["capability_request_id"]
+            isOneToOne: false
+            referencedRelation: "agent_capability_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acc_organization_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acc_requester_profile_fkey"
+            columns: ["requester_digital_profile_id"]
+            isOneToOne: false
+            referencedRelation: "digital_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acc_supersedes_fkey"
+            columns: ["supersedes_contract_id"]
+            isOneToOne: false
+            referencedRelation: "agent_capability_contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acc_verification_fkey"
+            columns: ["verification_id"]
+            isOneToOne: false
+            referencedRelation: "agent_capability_verifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_capability_requests: {
         Row: {
           cancelled_at: string | null
@@ -142,6 +288,91 @@ export type Database = {
           {
             foreignKeyName: "agent_capability_requests_target_organization_id_fkey"
             columns: ["target_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_capability_verifications: {
+        Row: {
+          agent_id: string
+          attestation_note: string | null
+          capability_key: string
+          created_at: string
+          decision_note: string | null
+          evidence: Json
+          expired_at: string | null
+          expires_at: string | null
+          id: string
+          organization_id: string
+          rejected_at: string | null
+          revoked_at: string | null
+          status: Database["public"]["Enums"]["capability_verification_status"]
+          updated_at: string
+          verification_id: string
+          verification_method: Database["public"]["Enums"]["verification_method"]
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          agent_id: string
+          attestation_note?: string | null
+          capability_key: string
+          created_at?: string
+          decision_note?: string | null
+          evidence?: Json
+          expired_at?: string | null
+          expires_at?: string | null
+          id?: string
+          organization_id: string
+          rejected_at?: string | null
+          revoked_at?: string | null
+          status?: Database["public"]["Enums"]["capability_verification_status"]
+          updated_at?: string
+          verification_id?: string
+          verification_method?: Database["public"]["Enums"]["verification_method"]
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          agent_id?: string
+          attestation_note?: string | null
+          capability_key?: string
+          created_at?: string
+          decision_note?: string | null
+          evidence?: Json
+          expired_at?: string | null
+          expires_at?: string | null
+          id?: string
+          organization_id?: string
+          rejected_at?: string | null
+          revoked_at?: string | null
+          status?: Database["public"]["Enums"]["capability_verification_status"]
+          updated_at?: string
+          verification_id?: string
+          verification_method?: Database["public"]["Enums"]["verification_method"]
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acv_agent_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "acv_agent_org_fkey"
+            columns: ["agent_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "acv_organization_fkey"
+            columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
@@ -731,6 +962,13 @@ export type Database = {
     }
     Enums: {
       app_role: "owner" | "admin" | "member"
+      capability_contract_status:
+        | "draft"
+        | "proposed"
+        | "accepted"
+        | "rejected"
+        | "revoked"
+        | "expired"
       capability_request_priority: "normal" | "high" | "urgent"
       capability_request_status:
         | "pending"
@@ -738,6 +976,12 @@ export type Database = {
         | "rejected"
         | "cancelled"
       capability_request_type: "capability_request"
+      capability_verification_status:
+        | "pending"
+        | "verified"
+        | "rejected"
+        | "revoked"
+        | "expired"
       digital_authority_status: "active" | "revoked" | "expired"
       digital_capability:
         | "read_profile"
@@ -774,6 +1018,10 @@ export type Database = {
       digital_visibility: "private" | "shared" | "public"
       discovery_status: "draft" | "listed" | "delisted"
       discovery_visibility: "private" | "unlisted" | "public"
+      verification_method:
+        | "org_self_attested"
+        | "platform_verified"
+        | "external_verified"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -902,6 +1150,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["owner", "admin", "member"],
+      capability_contract_status: [
+        "draft",
+        "proposed",
+        "accepted",
+        "rejected",
+        "revoked",
+        "expired",
+      ],
       capability_request_priority: ["normal", "high", "urgent"],
       capability_request_status: [
         "pending",
@@ -910,6 +1166,13 @@ export const Constants = {
         "cancelled",
       ],
       capability_request_type: ["capability_request"],
+      capability_verification_status: [
+        "pending",
+        "verified",
+        "rejected",
+        "revoked",
+        "expired",
+      ],
       digital_authority_status: ["active", "revoked", "expired"],
       digital_capability: [
         "read_profile",
@@ -950,6 +1213,11 @@ export const Constants = {
       digital_visibility: ["private", "shared", "public"],
       discovery_status: ["draft", "listed", "delisted"],
       discovery_visibility: ["private", "unlisted", "public"],
+      verification_method: [
+        "org_self_attested",
+        "platform_verified",
+        "external_verified",
+      ],
     },
   },
 } as const
