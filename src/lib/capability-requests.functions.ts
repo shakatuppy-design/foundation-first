@@ -43,8 +43,8 @@ export type CapabilityRequestRow = {
   target_organization_name: string | null;
   /** Only present when existing privacy rules let the viewer read the profile. */
   requester_display_name: string | null;
-  /** Reviewer-only: request context is never returned to the requester list. */
-  request_context?: Record<string, unknown>;
+  /** Reviewer-only, labelled purpose string. Raw request context is never returned. */
+  context_purpose: string | null;
 };
 
 const CREATE_FAILED =
@@ -255,6 +255,7 @@ export const listMyCapabilityRequests = createServerFn({ method: "POST" })
       target_agent_label: agentLabels.get(r.target_agent_id) ?? null,
       target_organization_name: orgLabels.get(r.target_organization_id) ?? null,
       requester_display_name: null,
+      context_purpose: null,
     }));
   });
 
@@ -313,7 +314,10 @@ export const listReviewCapabilityRequests = createServerFn({ method: "POST" })
       target_agent_label: agentLabels.get(r.target_agent_id) ?? null,
       target_organization_name: orgLabels.get(r.target_organization_id) ?? null,
       requester_display_name: profileLabels.get(r.requester_digital_profile_id) ?? null,
-      request_context: r.request_context ?? {},
+      context_purpose:
+        typeof r.request_context?.["purpose"] === "string"
+          ? (r.request_context["purpose"] as string)
+          : null,
     }));
   });
 
