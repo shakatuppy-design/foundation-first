@@ -41,7 +41,7 @@ export const Route = createFileRoute("/_authenticated/contracts")({
   }),
   errorComponent: ({ error }) => <RouteError error={error as Error} />,
   notFoundComponent: RouteNotFound,
-  component: ContractsPage;
+  component: ContractsPage,
 });
 
 function terms(contract: ContractMetadata | ContractParty) {
