@@ -68,13 +68,13 @@ export async function listControlledProfileIds(
 }
 
 /**
- * Resolves agent / organization / capability from a self-attestation. The
- * requester never supplies these; the database guard revalidates them under a
- * row lock during the write.
+ * Resolves agent / organization / capability from a self-attestation, addressed
+ * by its opaque public identifier. The requester never supplies the target; the
+ * database guard revalidates it under a row lock during the write.
  */
 export async function resolveVerificationTarget(
   supabase: Client,
-  verificationId: string,
+  publicVerificationId: string,
 ): Promise<{
   id: string;
   agent_id: string;
@@ -84,7 +84,7 @@ export async function resolveVerificationTarget(
   const { data } = await supabase
     .from("agent_capability_verifications")
     .select("id, agent_id, organization_id, capability_key, status, expires_at")
-    .eq("id", verificationId)
+    .eq("verification_id", publicVerificationId)
     .limit(1);
   const row = (data ?? [])[0] as
     | {
@@ -103,6 +103,32 @@ export async function resolveVerificationTarget(
     organization_id: row.organization_id,
     capability_key: row.capability_key,
   };
+}
+
+/**
+ * Resolves the currently valid self-attestation for an agent capability. Used
+ * when a new contract version must reference a valid attestation without the
+ * client naming one.
+ */
+export async function resolveCurrentVerification(
+  supabase: Client,
+  agentId: string,
+  organizationId: string,
+  capabilityKey: string,
+): Promise<string> {
+  const { data } = await supabase
+    .from("agent_capability_verifications")
+    .select("id, status, expires_at")
+    .eq("agent_id", agentId)
+    .eq("organization_id", organizationId)
+    .eq("capability_key", capabilityKey)
+    .eq("status", "verified")
+    .order("created_at", { ascending: false })
+    .limit(10);
+  const rows = (data ?? []) as { id: string; status: VerificationStatus; expires_at: string | null }[];
+  const valid = rows.find((r) => isVerificationCurrentlyValid(r));
+  if (!valid) throw new Error(E_VERIFICATION);
+  return valid.id;
 }
 
 /**
