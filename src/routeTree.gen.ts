@@ -17,6 +17,8 @@ import { Route as AuthenticatedDigitalSelfRouteImport } from './routes/_authenti
 import { Route as AuthenticatedDiscoveryRouteImport } from './routes/_authenticated/discovery'
 import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
 import { Route as AuthenticatedOrganizationsRouteImport } from './routes/_authenticated/organizations'
+import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
+import { Route as AuthenticatedReviewRequestsRouteImport } from './routes/_authenticated/review-requests'
 import { Route as AuthenticatedAgentsIndexRouteImport } from './routes/_authenticated/agents.index'
 import { Route as AuthenticatedAgentsAgentIdRouteImport } from './routes/_authenticated/agents.$agentId'
 
@@ -61,6 +63,17 @@ const AuthenticatedOrganizationsRoute =
     path: '/organizations',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedRequestsRoute = AuthenticatedRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedReviewRequestsRoute =
+  AuthenticatedReviewRequestsRouteImport.update({
+    id: '/review-requests',
+    path: '/review-requests',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAgentsIndexRoute =
   AuthenticatedAgentsIndexRouteImport.update({
     id: '/agents/',
@@ -82,6 +95,8 @@ export interface FileRoutesByFullPath {
   '/discovery': typeof AuthenticatedDiscoveryRoute
   '/members': typeof AuthenticatedMembersRoute
   '/organizations': typeof AuthenticatedOrganizationsRoute
+  '/requests': typeof AuthenticatedRequestsRoute
+  '/review-requests': typeof AuthenticatedReviewRequestsRoute
   '/agents/$agentId': typeof AuthenticatedAgentsAgentIdRoute
   '/agents/': typeof AuthenticatedAgentsIndexRoute
 }
@@ -93,6 +108,8 @@ export interface FileRoutesByTo {
   '/discovery': typeof AuthenticatedDiscoveryRoute
   '/members': typeof AuthenticatedMembersRoute
   '/organizations': typeof AuthenticatedOrganizationsRoute
+  '/requests': typeof AuthenticatedRequestsRoute
+  '/review-requests': typeof AuthenticatedReviewRequestsRoute
   '/agents/$agentId': typeof AuthenticatedAgentsAgentIdRoute
   '/agents': typeof AuthenticatedAgentsIndexRoute
 }
@@ -106,6 +123,8 @@ export interface FileRoutesById {
   '/_authenticated/discovery': typeof AuthenticatedDiscoveryRoute
   '/_authenticated/members': typeof AuthenticatedMembersRoute
   '/_authenticated/organizations': typeof AuthenticatedOrganizationsRoute
+  '/_authenticated/requests': typeof AuthenticatedRequestsRoute
+  '/_authenticated/review-requests': typeof AuthenticatedReviewRequestsRoute
   '/_authenticated/agents/$agentId': typeof AuthenticatedAgentsAgentIdRoute
   '/_authenticated/agents/': typeof AuthenticatedAgentsIndexRoute
 }
@@ -119,6 +138,8 @@ export interface FileRouteTypes {
     | '/discovery'
     | '/members'
     | '/organizations'
+    | '/requests'
+    | '/review-requests'
     | '/agents/$agentId'
     | '/agents/'
   fileRoutesByTo: FileRoutesByTo
@@ -130,6 +151,8 @@ export interface FileRouteTypes {
     | '/discovery'
     | '/members'
     | '/organizations'
+    | '/requests'
+    | '/review-requests'
     | '/agents/$agentId'
     | '/agents'
   id:
@@ -142,6 +165,8 @@ export interface FileRouteTypes {
     | '/_authenticated/discovery'
     | '/_authenticated/members'
     | '/_authenticated/organizations'
+    | '/_authenticated/requests'
+    | '/_authenticated/review-requests'
     | '/_authenticated/agents/$agentId'
     | '/_authenticated/agents/'
   fileRoutesById: FileRoutesById
@@ -210,6 +235,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrganizationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/requests': {
+      id: '/_authenticated/requests'
+      path: '/requests'
+      fullPath: '/requests'
+      preLoaderRoute: typeof AuthenticatedRequestsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/review-requests': {
+      id: '/_authenticated/review-requests'
+      path: '/review-requests'
+      fullPath: '/review-requests'
+      preLoaderRoute: typeof AuthenticatedReviewRequestsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/agents/': {
       id: '/_authenticated/agents/'
       path: '/agents'
@@ -233,6 +272,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDiscoveryRoute: typeof AuthenticatedDiscoveryRoute
   AuthenticatedMembersRoute: typeof AuthenticatedMembersRoute
   AuthenticatedOrganizationsRoute: typeof AuthenticatedOrganizationsRoute
+  AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
+  AuthenticatedReviewRequestsRoute: typeof AuthenticatedReviewRequestsRoute
   AuthenticatedAgentsAgentIdRoute: typeof AuthenticatedAgentsAgentIdRoute
   AuthenticatedAgentsIndexRoute: typeof AuthenticatedAgentsIndexRoute
 }
@@ -243,6 +284,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDiscoveryRoute: AuthenticatedDiscoveryRoute,
   AuthenticatedMembersRoute: AuthenticatedMembersRoute,
   AuthenticatedOrganizationsRoute: AuthenticatedOrganizationsRoute,
+  AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
+  AuthenticatedReviewRequestsRoute: AuthenticatedReviewRequestsRoute,
   AuthenticatedAgentsAgentIdRoute: AuthenticatedAgentsAgentIdRoute,
   AuthenticatedAgentsIndexRoute: AuthenticatedAgentsIndexRoute,
 }
