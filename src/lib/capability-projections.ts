@@ -114,7 +114,7 @@ export function toVerificationSafe(row: RawVerificationRow): VerificationSafe {
 /* ------------------------------ contracts ------------------------------- */
 
 export const CONTRACT_METADATA_SELECT =
-  "id, contract_id, capability_key, status, version, effective_from, expires_at, created_at, updated_at, proposed_at, accepted_at, rejected_at, revoked_at, expired_at, supersedes_contract_id, verification_id, agents!acc_agent_fkey(name, status), agent_capability_verifications!acc_verification_fkey(status, expires_at)";
+  "id, contract_id, capability_key, status, version, effective_from, expires_at, created_at, updated_at, proposed_at, accepted_at, rejected_at, revoked_at, expired_at, supersedes_contract_id, agents!acc_agent_fkey(name, status), agent_capability_verifications!acc_verification_fkey(status, expires_at)";
 export const CONTRACT_PARTY_SELECT = `${CONTRACT_METADATA_SELECT}, scope, constraints, limits, allowed_data, prohibited_data, requester_note`;
 
 export type ContractMetadata = {
@@ -123,7 +123,6 @@ export type ContractMetadata = {
   capability_key: string;
   status: ContractStatus;
   version: number;
-  verification_id: string;
   effective_from: string | null;
   expires_at: string | null;
   created_at: string;
@@ -153,7 +152,6 @@ export type RawContractRow = {
   capability_key: string;
   status: ContractStatus;
   version: number;
-  verification_id: string;
   effective_from: string | null;
   expires_at: string | null;
   created_at: string;
@@ -217,7 +215,6 @@ export function toContractMetadata(row: RawContractRow): ContractMetadata {
     capability_key: row.capability_key,
     status: row.status,
     version: row.version,
-    verification_id: row.verification_id,
     effective_from: row.effective_from,
     expires_at: row.expires_at,
     created_at: row.created_at,
