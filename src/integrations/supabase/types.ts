@@ -59,6 +59,95 @@ export type Database = {
           },
         ]
       }
+      agent_capability_requests: {
+        Row: {
+          cancelled_at: string | null
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          id: string
+          priority: Database["public"]["Enums"]["capability_request_priority"]
+          request_context: Json
+          request_id: string
+          request_type: Database["public"]["Enums"]["capability_request_type"]
+          requested_capability: string
+          requester_digital_profile_id: string
+          requester_note: string | null
+          reviewer_note: string | null
+          status: Database["public"]["Enums"]["capability_request_status"]
+          target_agent_id: string
+          target_organization_id: string
+          updated_at: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["capability_request_priority"]
+          request_context?: Json
+          request_id?: string
+          request_type?: Database["public"]["Enums"]["capability_request_type"]
+          requested_capability: string
+          requester_digital_profile_id: string
+          requester_note?: string | null
+          reviewer_note?: string | null
+          status?: Database["public"]["Enums"]["capability_request_status"]
+          target_agent_id: string
+          target_organization_id: string
+          updated_at?: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["capability_request_priority"]
+          request_context?: Json
+          request_id?: string
+          request_type?: Database["public"]["Enums"]["capability_request_type"]
+          requested_capability?: string
+          requester_digital_profile_id?: string
+          requester_note?: string | null
+          reviewer_note?: string | null
+          status?: Database["public"]["Enums"]["capability_request_status"]
+          target_agent_id?: string
+          target_organization_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_capability_requests_agent_org_fkey"
+            columns: ["target_agent_id", "target_organization_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id", "organization_id"]
+          },
+          {
+            foreignKeyName: "agent_capability_requests_requester_digital_profile_id_fkey"
+            columns: ["requester_digital_profile_id"]
+            isOneToOne: false
+            referencedRelation: "digital_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_capability_requests_target_agent_id_fkey"
+            columns: ["target_agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_capability_requests_target_organization_id_fkey"
+            columns: ["target_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_discovery_profiles: {
         Row: {
           agent_id: string
@@ -642,6 +731,13 @@ export type Database = {
     }
     Enums: {
       app_role: "owner" | "admin" | "member"
+      capability_request_priority: "normal" | "high" | "urgent"
+      capability_request_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "cancelled"
+      capability_request_type: "capability_request"
       digital_authority_status: "active" | "revoked" | "expired"
       digital_capability:
         | "read_profile"
@@ -806,6 +902,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["owner", "admin", "member"],
+      capability_request_priority: ["normal", "high", "urgent"],
+      capability_request_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "cancelled",
+      ],
+      capability_request_type: ["capability_request"],
       digital_authority_status: ["active", "revoked", "expired"],
       digital_capability: [
         "read_profile",
