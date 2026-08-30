@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CapabilityRequestDialog } from "@/components/capability-request-dialog";
+import { ContractDraftDialog } from "@/components/contract-draft-dialog";
 import { searchDiscovery, type DiscoveryResult } from "@/lib/discovery.functions";
 
 export const Route = createFileRoute("/_authenticated/discovery")({
@@ -163,8 +164,13 @@ function DiscoveryPage() {
                           agentLabel={r.display_name}
                           capabilities={r.capabilities}
                         />
+                        <ContractDraftDialog
+                          discoveryId={r.discovery_id}
+                          agentLabel={r.display_name}
+                          capabilities={r.capabilities}
+                        />
                         <span className="text-xs text-muted-foreground">
-                          Requesting does not grant authority.
+                          Requesting or contracting does not grant authority.
                         </span>
                       </div>
                     </li>
