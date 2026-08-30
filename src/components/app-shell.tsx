@@ -11,6 +11,8 @@ import {
   Menu,
   Network,
   Radar,
+  Send,
+  ShieldQuestion,
 
   Users,
   X,
@@ -35,6 +37,8 @@ const nav = [
   { to: "/members", label: "Members", icon: Users },
   { to: "/agents", label: "Agent Network", icon: Network },
   { to: "/discovery", label: "Discovery", icon: Radar },
+  { to: "/requests", label: "My Requests", icon: Send },
+  { to: "/review-requests", label: "Capability Requests", icon: ShieldQuestion },
 ] as const;
 
 function OrganizationSelector() {
