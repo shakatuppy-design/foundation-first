@@ -94,12 +94,18 @@ export function PilotReasoningSection() {
           </div>
         </div>
 
-        <Button
-          onClick={() => mutation.mutate()}
-          disabled={mutation.isPending || !evidence.trim() || !task.trim()}
-        >
-          {mutation.isPending ? "Analysing…" : "Run analysis"}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            onClick={() => mutation.mutate({ evidence, task })}
+            disabled={mutation.isPending || !evidence.trim() || !task.trim()}
+          >
+            {mutation.isPending ? "Analysing…" : "Run analysis"}
+          </Button>
+          <Button variant="outline" onClick={runTestFixture} disabled={mutation.isPending}>
+            RUN REAL REASONING TEST
+          </Button>
+        </div>
+
 
         {mutation.isError && (
           <p
