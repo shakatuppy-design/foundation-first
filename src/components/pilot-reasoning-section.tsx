@@ -43,12 +43,21 @@ export function PilotReasoningSection() {
   const [task, setTask] = useState(DEFAULT_TASK);
   const callGateway = useServerFn(runPilotReasoning);
 
-  const mutation = useMutation<ReasoningResult>({
-    mutationFn: () =>
-      callGateway({ data: { agentKey: PILOT_AGENT_KEY, evidence, task } }) as Promise<ReasoningResult>,
+  const mutation = useMutation<ReasoningResult, Error, { evidence: string; task: string }>({
+    mutationFn: (vars) =>
+      callGateway({
+        data: { agentKey: PILOT_AGENT_KEY, evidence: vars.evidence, task: vars.task },
+      }) as Promise<ReasoningResult>,
   });
 
   const result = mutation.data;
+
+  const runTestFixture = () => {
+    setEvidence(TEST_EVIDENCE);
+    setTask(TEST_TASK);
+    mutation.mutate({ evidence: TEST_EVIDENCE, task: TEST_TASK });
+  };
+
 
   return (
     <Card>
