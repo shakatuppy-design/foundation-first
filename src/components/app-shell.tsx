@@ -7,6 +7,7 @@ import {
   Check,
   ChevronsUpDown,
   Fingerprint,
+  Gauge,
   LayoutDashboard,
   LogOut,
   Menu,
