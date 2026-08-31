@@ -9,17 +9,24 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { runPilotReasoning } from "@/lib/reasoning.functions";
-import { PILOT_AGENT_KEY, type ReasoningResult } from "@/lib/reasoning-contract";
+import { PILOT_AGENT_KEY, type ObservedItem, type ReasoningResult } from "@/lib/reasoning-contract";
 
-const DEFAULT_EVIDENCE = "Daily orders fell from 100 to 70 over the last three days.";
+const DEFAULT_FACTS = "Daily orders fell from 100 to 70 over the last three days.";
+const DEFAULT_UNTRUSTED = "";
 const DEFAULT_TASK =
-  "Identify what can be established from this evidence and what additional information management should investigate.";
+  "Identify what can be established from the verified facts and what additional information management should investigate.";
 
 /** Fixed, harmless verification fixture. Analysis only — no business action. */
-const TEST_EVIDENCE = "Daily orders were:\nMonday 100\nTuesday 95\nWednesday 70.";
+const TEST_FACTS = "Monday orders = 100\nTuesday orders = 95\nWednesday orders = 70";
+const TEST_UNTRUSTED = "42% of customers churned because the payment gateway failed.";
 const TEST_TASK =
-  "Analyze this situation for management. Separate facts from inference and hypothesis. Do not assume the cause of the decline.";
+  "Analyze this situation for management. Do not assume the cause of the decline. Treat untrusted text as unverified claims only.";
 
+const toLines = (value: string) =>
+  value
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
 
 function Group({ label, items }: { label: string; items: string[] }) {
   return (
@@ -38,26 +45,64 @@ function Group({ label, items }: { label: string; items: string[] }) {
   );
 }
 
+function ObservedGroup({ items, facts }: { items: ObservedItem[]; facts: string[] }) {
+  return (
+    <div className="space-y-1.5">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        Observed (traceable to a verified fact)
+      </p>
+      {items.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          Nothing could be established from verified facts.
+        </p>
+      ) : (
+        <ul className="list-disc space-y-1 pl-5 text-sm leading-relaxed">
+          {items.map((item, i) => (
+            <li key={`observed-${i}`}>
+              {item.claim}{" "}
+              <span className="font-mono text-[11px] text-muted-foreground">
+                ← verified fact [{item.verified_fact_index}]
+                {facts[item.verified_fact_index] ? `: ${facts[item.verified_fact_index]}` : ""}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export function PilotReasoningSection() {
-  const [evidence, setEvidence] = useState(DEFAULT_EVIDENCE);
+  const [factsText, setFactsText] = useState(DEFAULT_FACTS);
+  const [untrustedText, setUntrustedText] = useState(DEFAULT_UNTRUSTED);
   const [task, setTask] = useState(DEFAULT_TASK);
+  const [submittedFacts, setSubmittedFacts] = useState<string[]>([]);
   const callGateway = useServerFn(runPilotReasoning);
 
-  const mutation = useMutation<ReasoningResult, Error, { evidence: string; task: string }>({
+  const mutation = useMutation<
+    ReasoningResult,
+    Error,
+    { verified_facts: string[]; untrusted_text: string[]; task: string }
+  >({
     mutationFn: (vars) =>
       callGateway({
-        data: { agentKey: PILOT_AGENT_KEY, evidence: vars.evidence, task: vars.task },
+        data: { agentKey: PILOT_AGENT_KEY, ...vars },
       }) as Promise<ReasoningResult>,
   });
 
   const result = mutation.data;
 
-  const runTestFixture = () => {
-    setEvidence(TEST_EVIDENCE);
-    setTask(TEST_TASK);
-    mutation.mutate({ evidence: TEST_EVIDENCE, task: TEST_TASK });
+  const run = (facts: string[], untrusted: string[], taskText: string) => {
+    setSubmittedFacts(facts);
+    mutation.mutate({ verified_facts: facts, untrusted_text: untrusted, task: taskText });
   };
 
+  const runTestFixture = () => {
+    setFactsText(TEST_FACTS);
+    setUntrustedText(TEST_UNTRUSTED);
+    setTask(TEST_TASK);
+    run(toLines(TEST_FACTS), toLines(TEST_UNTRUSTED), TEST_TASK);
+  };
 
   return (
     <Card>
@@ -67,20 +112,30 @@ export function PilotReasoningSection() {
           Reasoning gateway
         </CardTitle>
         <CardDescription>
-          Real language-model analysis for the Management Intelligence Pilot only. The model reads
-          the evidence you supply and returns a structured reading of it. It holds no authority, no
-          database access and no ability to execute anything.
+          Real language-model analysis for the Management Intelligence Pilot only. Only verified
+          facts can support an observed claim; untrusted text is analysed as unverified claims. The
+          model holds no authority, no database access and no ability to execute anything.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           <div className="space-y-2">
-            <Label htmlFor="pilot-evidence">Evidence</Label>
+            <Label htmlFor="pilot-facts">Verified facts (one per line)</Label>
             <Textarea
-              id="pilot-evidence"
-              value={evidence}
-              onChange={(e) => setEvidence(e.target.value)}
+              id="pilot-facts"
+              value={factsText}
+              onChange={(e) => setFactsText(e.target.value)}
               rows={5}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="pilot-untrusted">Untrusted text (one per line)</Label>
+            <Textarea
+              id="pilot-untrusted"
+              value={untrustedText}
+              onChange={(e) => setUntrustedText(e.target.value)}
+              rows={5}
+              placeholder="Human notes, comments or claims — never treated as observed."
             />
           </div>
           <div className="space-y-2">
@@ -96,8 +151,8 @@ export function PilotReasoningSection() {
 
         <div className="flex flex-wrap gap-2">
           <Button
-            onClick={() => mutation.mutate({ evidence, task })}
-            disabled={mutation.isPending || !evidence.trim() || !task.trim()}
+            onClick={() => run(toLines(factsText), toLines(untrustedText), task)}
+            disabled={mutation.isPending || !task.trim()}
           >
             {mutation.isPending ? "Analysing…" : "Run analysis"}
           </Button>
@@ -105,7 +160,6 @@ export function PilotReasoningSection() {
             RUN REAL REASONING TEST
           </Button>
         </div>
-
 
         {mutation.isError && (
           <p
@@ -137,7 +191,8 @@ export function PilotReasoningSection() {
               <Badge variant="outline">No authority · no execution</Badge>
             </div>
             <Separator />
-            <Group label="Observed" items={result.output.observed} />
+            <ObservedGroup items={result.output.observed} facts={submittedFacts} />
+            <Group label="Unverified claims (from untrusted text)" items={result.output.unverified_claims} />
             <Group label="Inferred" items={result.output.inferred} />
             <Group label="Hypotheses" items={result.output.hypotheses} />
             <Group label="Counter-hypotheses" items={result.output.counter_hypotheses} />
