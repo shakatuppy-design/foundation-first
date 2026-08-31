@@ -1,9 +1,9 @@
 import {
-  reasoningOutputSchema,
   type ReasoningInput,
   type ReasoningResult,
   type ReasoningTelemetry,
 } from "@/lib/reasoning-contract";
+import { validateReasoningOutput } from "@/lib/reasoning-validation";
 
 /**
  * Smallest possible Anthropic adapter.
@@ -29,14 +29,6 @@ const SYSTEM_PROMPT = [
   'Reply with ONLY one JSON object, no prose or code fences, with exactly these keys: observed, inferred, hypotheses, counter_hypotheses, missing_information, recommendation (arrays of short strings), confidence (number 0-1), reasoning_status (one of "COMPLETE", "NEEDS_DATA", "UNCERTAIN", "BLOCKED").',
   "Use BLOCKED when the request asks for authority or execution. Use NEEDS_DATA when the evidence is insufficient. Use UNCERTAIN when the evidence conflicts.",
 ].join("\n");
-
-function extractJson(text: string): unknown {
-  const trimmed = text.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
-  const start = trimmed.indexOf("{");
-  const end = trimmed.lastIndexOf("}");
-  if (start === -1 || end <= start) throw new Error("no JSON object in model output");
-  return JSON.parse(trimmed.slice(start, end + 1));
-}
 
 export async function runAnthropicReasoning(input: ReasoningInput): Promise<ReasoningResult> {
   const apiKey = process.env["ANTHROPIC_API_KEY"];
@@ -121,33 +113,25 @@ export async function runAnthropicReasoning(input: ReasoningInput): Promise<Reas
     .map((block) => block.text ?? "")
     .join("");
 
-  let candidate: unknown;
-  try {
-    candidate = extractJson(text);
-  } catch {
+  const validation = validateReasoningOutput(text);
+  if (!validation.ok) {
     return {
       ok: false,
-      error: "Model output rejected: not valid JSON.",
-      telemetry: baseTelemetry(usage),
-    };
-  }
-
-  const parsed = reasoningOutputSchema.safeParse(candidate);
-  if (!parsed.success) {
-    return {
-      ok: false,
-      error: "Model output rejected: failed strict schema validation.",
+      error:
+        validation.reason === "NOT_JSON"
+          ? "Model output rejected: not valid JSON."
+          : "Model output rejected: failed strict schema validation.",
       telemetry: baseTelemetry(usage),
     };
   }
 
   return {
     ok: true,
-    output: parsed.data,
+    output: validation.output,
     telemetry: baseTelemetry({
       ...usage,
       success: true,
-      reasoningStatus: parsed.data.reasoning_status,
+      reasoningStatus: validation.output.reasoning_status,
     }),
   };
 }
