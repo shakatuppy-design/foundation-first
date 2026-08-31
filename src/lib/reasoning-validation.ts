@@ -6,6 +6,9 @@ import { reasoningOutputSchema, type ReasoningOutput } from "@/lib/reasoning-con
  * Rules (non-negotiable):
  * - No repair, no reinterpretation, no type coercion, no defaults.
  * - Any deviation from the strict contract is a REJECTION.
+ * - PROVENANCE: every OBSERVED item must reference a supplied verified fact.
+ *   With no verified facts there can be no OBSERVED item, and the status must
+ *   admit the shortfall (NEEDS_DATA / UNCERTAIN / BLOCKED).
  *
  * Extracted so the adversarial test layer can exercise the exact production
  * validator without weakening it.
@@ -13,7 +16,7 @@ import { reasoningOutputSchema, type ReasoningOutput } from "@/lib/reasoning-con
 
 export type ReasoningValidation =
   | { ok: true; output: ReasoningOutput }
-  | { ok: false; reason: "NOT_JSON" | "SCHEMA"; issues: string[] };
+  | { ok: false; reason: "NOT_JSON" | "SCHEMA" | "PROVENANCE"; issues: string[] };
 
 function extractJsonObject(text: string): unknown {
   const trimmed = text
@@ -27,7 +30,10 @@ function extractJsonObject(text: string): unknown {
   return JSON.parse(trimmed.slice(start, end + 1));
 }
 
-export function validateReasoningOutput(rawText: string): ReasoningValidation {
+export function validateReasoningOutput(
+  rawText: string,
+  verifiedFactCount: number,
+): ReasoningValidation {
   let candidate: unknown;
   try {
     candidate = extractJsonObject(rawText);
@@ -46,5 +52,27 @@ export function validateReasoningOutput(rawText: string): ReasoningValidation {
     };
   }
 
-  return { ok: true, output: parsed.data };
+  const output = parsed.data;
+  const issues: string[] = [];
+
+  for (const [i, item] of output.observed.entries()) {
+    if (item.verified_fact_index >= verifiedFactCount) {
+      issues.push(
+        `observed.${i}: verified_fact_index ${item.verified_fact_index} does not reference a supplied verified fact`,
+      );
+    }
+  }
+
+  if (
+    verifiedFactCount === 0 &&
+    !["NEEDS_DATA", "UNCERTAIN", "BLOCKED"].includes(output.reasoning_status)
+  ) {
+    issues.push(
+      `reasoning_status: no verified facts were supplied, so status must be NEEDS_DATA, UNCERTAIN or BLOCKED (got ${output.reasoning_status})`,
+    );
+  }
+
+  if (issues.length > 0) return { ok: false, reason: "PROVENANCE", issues };
+
+  return { ok: true, output };
 }
