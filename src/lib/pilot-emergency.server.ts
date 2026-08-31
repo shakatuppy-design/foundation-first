@@ -12,6 +12,7 @@ import {
  * model returns can reach this code path.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Client = { from: (table: string) => any };
 
 type RawEvent = {
