@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { runPilotReasoning } from "@/lib/reasoning.functions";
 import { PILOT_AGENT_KEY, type ObservedItem, type ReasoningResult } from "@/lib/reasoning-contract";
 import { useOrganizations } from "@/lib/org-context";
+import { PilotLessonCapture } from "@/components/pilot-lesson-capture";
 
 const DEFAULT_FACTS = "Daily orders fell from 100 to 70 over the last three days.";
 const DEFAULT_UNTRUSTED = "";
@@ -219,6 +220,18 @@ export function PilotReasoningSection() {
             <Group label="Counter-hypotheses" items={result.output.counter_hypotheses} />
             <Group label="Missing information" items={result.output.missing_information} />
             <Group label="Recommendation" items={result.output.recommendation} />
+            <Separator />
+            <PilotLessonCapture
+              reference={{
+                model: result.telemetry.model,
+                timestamp: result.telemetry.timestamp,
+                reasoning_status: result.output.reasoning_status,
+                confidence: result.output.confidence,
+                observed: result.output.observed.map((o) => o.claim),
+                recommendation: result.output.recommendation,
+                task,
+              }}
+            />
           </div>
         )}
 

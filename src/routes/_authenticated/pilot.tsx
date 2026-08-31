@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { PilotReasoningSection } from "@/components/pilot-reasoning-section";
 import { PilotEmergencySection } from "@/components/pilot-emergency-section";
+import { PilotLessonBoard } from "@/components/pilot-lesson-board";
 import { AppShell } from "@/components/app-shell";
 import { RouteError, RouteNotFound } from "@/components/route-error";
 import { Badge } from "@/components/ui/badge";
@@ -668,7 +669,12 @@ function PilotControlCenter() {
             {s.id === "evidence" && <EvidenceSection finding={selected} />}
             {s.id === "behavior" && <BehaviorLabSection />}
             {s.id === "reasoning" && <PilotReasoningSection />}
-            {s.id === "feedback" && <FeedbackSection />}
+            {s.id === "feedback" && (
+              <div className="space-y-4">
+                <PilotLessonBoard />
+                <FeedbackSection />
+              </div>
+            )}
             {s.id === "authority" && <AuthoritySection />}
             {s.id === "risk" && <RiskSection />}
             {s.id === "sandbox" && <SandboxSection />}
