@@ -14,6 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      _lesson_test_out: {
+        Row: {
+          outcome: string | null
+          t: string | null
+        }
+        Insert: {
+          outcome?: string | null
+          t?: string | null
+        }
+        Update: {
+          outcome?: string | null
+          t?: string | null
+        }
+        Relationships: []
+      }
       agent_activity_logs: {
         Row: {
           actor_id: string | null
