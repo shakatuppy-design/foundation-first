@@ -901,6 +901,7 @@ export type Database = {
           pilot_key: string
           previous_state: string
           reason: string
+          seq: number
         }
         Insert: {
           activated_by?: string
@@ -911,6 +912,7 @@ export type Database = {
           pilot_key?: string
           previous_state: string
           reason: string
+          seq?: number
         }
         Update: {
           activated_by?: string
@@ -921,6 +923,7 @@ export type Database = {
           pilot_key?: string
           previous_state?: string
           reason?: string
+          seq?: number
         }
         Relationships: [
           {
