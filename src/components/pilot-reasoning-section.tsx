@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { runPilotReasoning } from "@/lib/reasoning.functions";
 import { PILOT_AGENT_KEY, type ObservedItem, type ReasoningResult } from "@/lib/reasoning-contract";
+import { useOrganizations } from "@/lib/org-context";
 
 const DEFAULT_FACTS = "Daily orders fell from 100 to 70 over the last three days.";
 const DEFAULT_UNTRUSTED = "";
@@ -78,6 +79,8 @@ export function PilotReasoningSection() {
   const [task, setTask] = useState(DEFAULT_TASK);
   const [submittedFacts, setSubmittedFacts] = useState<string[]>([]);
   const callGateway = useServerFn(runPilotReasoning);
+  const { activeOrg } = useOrganizations();
+  const orgId = activeOrg?.id ?? "";
 
   const mutation = useMutation<
     ReasoningResult,
@@ -86,7 +89,7 @@ export function PilotReasoningSection() {
   >({
     mutationFn: (vars) =>
       callGateway({
-        data: { agentKey: PILOT_AGENT_KEY, ...vars },
+        data: { agentKey: PILOT_AGENT_KEY, organizationId: orgId, ...vars },
       }) as Promise<ReasoningResult>,
   });
 
@@ -152,11 +155,11 @@ export function PilotReasoningSection() {
         <div className="flex flex-wrap gap-2">
           <Button
             onClick={() => run(toLines(factsText), toLines(untrustedText), task)}
-            disabled={mutation.isPending || !task.trim()}
+            disabled={mutation.isPending || !task.trim() || !orgId}
           >
             {mutation.isPending ? "Analysing…" : "Run analysis"}
           </Button>
-          <Button variant="outline" onClick={runTestFixture} disabled={mutation.isPending}>
+          <Button variant="outline" onClick={runTestFixture} disabled={mutation.isPending || !orgId}>
             RUN REAL REASONING TEST
           </Button>
         </div>
@@ -171,7 +174,18 @@ export function PilotReasoningSection() {
           </p>
         )}
 
-        {result && !result.ok && (
+        {result && !result.ok && result.blocked && (
+          <p
+            role="status"
+            className="flex items-start gap-2 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-xs font-medium text-destructive"
+          >
+            <ShieldAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            BLOCKED — {result.error} No model call was made, no capability was granted and no
+            authority changed.
+          </p>
+        )}
+
+        {result && !result.ok && !result.blocked && (
           <p
             role="status"
             className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive"
