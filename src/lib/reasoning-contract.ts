@@ -79,4 +79,4 @@ export type ReasoningTelemetry = {
 
 export type ReasoningResult =
   | { ok: true; output: ReasoningOutput; telemetry: ReasoningTelemetry }
-  | { ok: false; error: string; telemetry: ReasoningTelemetry };
+  | { ok: false; error: string; telemetry: ReasoningTelemetry; blocked?: true };
