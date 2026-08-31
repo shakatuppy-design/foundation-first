@@ -192,7 +192,10 @@ export function PilotReasoningSection() {
             </div>
             <Separator />
             <ObservedGroup items={result.output.observed} facts={submittedFacts} />
-            <Group label="Unverified claims (from untrusted text)" items={result.output.unverified_claims} />
+            <Group
+              label="Unverified claims (from untrusted text)"
+              items={result.output.unverified_claims}
+            />
             <Group label="Inferred" items={result.output.inferred} />
             <Group label="Hypotheses" items={result.output.hypotheses} />
             <Group label="Counter-hypotheses" items={result.output.counter_hypotheses} />
