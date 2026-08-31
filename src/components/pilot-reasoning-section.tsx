@@ -15,6 +15,12 @@ const DEFAULT_EVIDENCE = "Daily orders fell from 100 to 70 over the last three d
 const DEFAULT_TASK =
   "Identify what can be established from this evidence and what additional information management should investigate.";
 
+/** Fixed, harmless verification fixture. Analysis only — no business action. */
+const TEST_EVIDENCE = "Daily orders were:\nMonday 100\nTuesday 95\nWednesday 70.";
+const TEST_TASK =
+  "Analyze this situation for management. Separate facts from inference and hypothesis. Do not assume the cause of the decline.";
+
+
 function Group({ label, items }: { label: string; items: string[] }) {
   return (
     <div className="space-y-1.5">
@@ -37,12 +43,21 @@ export function PilotReasoningSection() {
   const [task, setTask] = useState(DEFAULT_TASK);
   const callGateway = useServerFn(runPilotReasoning);
 
-  const mutation = useMutation<ReasoningResult>({
-    mutationFn: () =>
-      callGateway({ data: { agentKey: PILOT_AGENT_KEY, evidence, task } }) as Promise<ReasoningResult>,
+  const mutation = useMutation<ReasoningResult, Error, { evidence: string; task: string }>({
+    mutationFn: (vars) =>
+      callGateway({
+        data: { agentKey: PILOT_AGENT_KEY, evidence: vars.evidence, task: vars.task },
+      }) as Promise<ReasoningResult>,
   });
 
   const result = mutation.data;
+
+  const runTestFixture = () => {
+    setEvidence(TEST_EVIDENCE);
+    setTask(TEST_TASK);
+    mutation.mutate({ evidence: TEST_EVIDENCE, task: TEST_TASK });
+  };
+
 
   return (
     <Card>
@@ -79,12 +94,18 @@ export function PilotReasoningSection() {
           </div>
         </div>
 
-        <Button
-          onClick={() => mutation.mutate()}
-          disabled={mutation.isPending || !evidence.trim() || !task.trim()}
-        >
-          {mutation.isPending ? "Analysing…" : "Run analysis"}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            onClick={() => mutation.mutate({ evidence, task })}
+            disabled={mutation.isPending || !evidence.trim() || !task.trim()}
+          >
+            {mutation.isPending ? "Analysing…" : "Run analysis"}
+          </Button>
+          <Button variant="outline" onClick={runTestFixture} disabled={mutation.isPending}>
+            RUN REAL REASONING TEST
+          </Button>
+        </div>
+
 
         {mutation.isError && (
           <p
