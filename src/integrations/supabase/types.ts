@@ -935,6 +935,125 @@ export type Database = {
           },
         ]
       }
+      pilot_lesson_review_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          event: string
+          id: string
+          lesson_review_id: string
+          new_state: Database["public"]["Enums"]["lesson_state"]
+          note: string
+          organization_id: string
+          previous_state: Database["public"]["Enums"]["lesson_state"] | null
+          seq: number
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          event: string
+          id?: string
+          lesson_review_id: string
+          new_state: Database["public"]["Enums"]["lesson_state"]
+          note?: string
+          organization_id: string
+          previous_state?: Database["public"]["Enums"]["lesson_state"] | null
+          seq?: number
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          event?: string
+          id?: string
+          lesson_review_id?: string
+          new_state?: Database["public"]["Enums"]["lesson_state"]
+          note?: string
+          organization_id?: string
+          previous_state?: Database["public"]["Enums"]["lesson_state"] | null
+          seq?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_lesson_review_events_lesson_review_id_fkey"
+            columns: ["lesson_review_id"]
+            isOneToOne: false
+            referencedRelation: "pilot_lesson_reviews"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pilot_lesson_review_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pilot_lesson_reviews: {
+        Row: {
+          agent_output_reference: Json
+          correction: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          decision_note: string
+          human_verdict: Database["public"]["Enums"]["lesson_human_verdict"]
+          id: string
+          lesson_candidate: string
+          organization_id: string
+          pilot_key: string
+          reviewed_at: string | null
+          reviewer: string
+          state: Database["public"]["Enums"]["lesson_state"]
+          supporting_evidence: string[]
+          updated_at: string
+        }
+        Insert: {
+          agent_output_reference: Json
+          correction?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string
+          human_verdict: Database["public"]["Enums"]["lesson_human_verdict"]
+          id?: string
+          lesson_candidate?: string
+          organization_id: string
+          pilot_key?: string
+          reviewed_at?: string | null
+          reviewer: string
+          state?: Database["public"]["Enums"]["lesson_state"]
+          supporting_evidence?: string[]
+          updated_at?: string
+        }
+        Update: {
+          agent_output_reference?: Json
+          correction?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_note?: string
+          human_verdict?: Database["public"]["Enums"]["lesson_human_verdict"]
+          id?: string
+          lesson_candidate?: string
+          organization_id?: string
+          pilot_key?: string
+          reviewed_at?: string | null
+          reviewer?: string
+          state?: Database["public"]["Enums"]["lesson_state"]
+          supporting_evidence?: string[]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_lesson_reviews_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1062,6 +1181,13 @@ export type Database = {
       digital_visibility: "private" | "shared" | "public"
       discovery_status: "draft" | "listed" | "delisted"
       discovery_visibility: "private" | "unlisted" | "public"
+      lesson_human_verdict:
+        | "CORRECT"
+        | "INCORRECT"
+        | "PARTIALLY_CORRECT"
+        | "NEEDS_MORE_DATA"
+        | "UNKNOWN"
+      lesson_state: "CANDIDATE" | "REVIEWED" | "APPROVED" | "REJECTED"
       verification_method:
         | "org_self_attested"
         | "platform_verified"
@@ -1257,6 +1383,14 @@ export const Constants = {
       digital_visibility: ["private", "shared", "public"],
       discovery_status: ["draft", "listed", "delisted"],
       discovery_visibility: ["private", "unlisted", "public"],
+      lesson_human_verdict: [
+        "CORRECT",
+        "INCORRECT",
+        "PARTIALLY_CORRECT",
+        "NEEDS_MORE_DATA",
+        "UNKNOWN",
+      ],
+      lesson_state: ["CANDIDATE", "REVIEWED", "APPROVED", "REJECTED"],
       verification_method: [
         "org_self_attested",
         "platform_verified",
