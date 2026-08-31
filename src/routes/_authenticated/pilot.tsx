@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   Ban,
   Beaker,
+  Brain,
   CheckCircle2,
   FlaskConical,
   Gauge,
@@ -15,6 +16,7 @@ import {
   ShieldAlert,
   Sparkles,
 } from "lucide-react";
+import { PilotReasoningSection } from "@/components/pilot-reasoning-section";
 import { AppShell } from "@/components/app-shell";
 import { RouteError, RouteNotFound } from "@/components/route-error";
 import { Badge } from "@/components/ui/badge";
@@ -678,6 +680,7 @@ function PilotControlCenter() {
             )}
             {s.id === "evidence" && <EvidenceSection finding={selected} />}
             {s.id === "behavior" && <BehaviorLabSection />}
+            {s.id === "reasoning" && <PilotReasoningSection />}
             {s.id === "feedback" && <FeedbackSection />}
             {s.id === "authority" && <AuthoritySection />}
             {s.id === "risk" && <RiskSection />}
