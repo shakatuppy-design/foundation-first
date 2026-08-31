@@ -690,7 +690,6 @@ function PilotControlCenter() {
           Pilot Control Center v0.1 renders local mock data only. Discovery, capability requests,
           self-attestation, contracts and authority remain separate systems, and none of them is
           read or written from this screen.
-          <Activity className="sr-only" aria-hidden="true" />
         </p>
       </div>
     </AppShell>
