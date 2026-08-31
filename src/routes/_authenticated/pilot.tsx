@@ -14,8 +14,10 @@ import {
   MessageSquare,
   Search,
   Sparkles,
+  TrendingUp,
 } from "lucide-react";
 import { PilotReasoningSection } from "@/components/pilot-reasoning-section";
+import { PilotRevenueSection } from "@/components/pilot-revenue-section";
 import { PilotEmergencySection } from "@/components/pilot-emergency-section";
 import { PilotLessonBoard } from "@/components/pilot-lesson-board";
 import { AppShell } from "@/components/app-shell";
@@ -591,6 +593,13 @@ const SECTIONS = [
     description: "Reviewer judgements recorded against findings.",
   },
   {
+    id: "revenue",
+    title: "Revenue opportunity pilot",
+    icon: TrendingUp,
+    description:
+      "Real business-value pilot: agent findings, estimated value, human outcome loop and agent ROI. Observe, analyze, recommend — never execute.",
+  },
+  {
     id: "authority",
     title: "Authority status",
     icon: KeyRound,
@@ -675,6 +684,7 @@ function PilotControlCenter() {
                 <FeedbackSection />
               </div>
             )}
+            {s.id === "revenue" && <PilotRevenueSection />}
             {s.id === "authority" && <AuthoritySection />}
             {s.id === "risk" && <RiskSection />}
             {s.id === "sandbox" && <SandboxSection />}

@@ -1054,6 +1054,152 @@ export type Database = {
           },
         ]
       }
+      pilot_opportunity_outcomes: {
+        Row: {
+          action_description: string
+          actual_value_idr: number
+          baseline_metric: string
+          created_at: string
+          decision: Database["public"]["Enums"]["revenue_human_decision"]
+          evidence_reference: string[]
+          human_review_cost_idr: number
+          id: string
+          note: string
+          opportunity_id: string
+          organization_id: string
+          post_action_metric: string
+          recorded_by: string
+          value_kind: Database["public"]["Enums"]["revenue_value_kind"]
+        }
+        Insert: {
+          action_description?: string
+          actual_value_idr?: number
+          baseline_metric?: string
+          created_at?: string
+          decision: Database["public"]["Enums"]["revenue_human_decision"]
+          evidence_reference?: string[]
+          human_review_cost_idr?: number
+          id?: string
+          note?: string
+          opportunity_id: string
+          organization_id: string
+          post_action_metric?: string
+          recorded_by: string
+          value_kind?: Database["public"]["Enums"]["revenue_value_kind"]
+        }
+        Update: {
+          action_description?: string
+          actual_value_idr?: number
+          baseline_metric?: string
+          created_at?: string
+          decision?: Database["public"]["Enums"]["revenue_human_decision"]
+          evidence_reference?: string[]
+          human_review_cost_idr?: number
+          id?: string
+          note?: string
+          opportunity_id?: string
+          organization_id?: string
+          post_action_metric?: string
+          recorded_by?: string
+          value_kind?: Database["public"]["Enums"]["revenue_value_kind"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_opportunity_outcomes_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: true
+            referencedRelation: "pilot_revenue_opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pilot_opportunity_outcomes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pilot_revenue_opportunities: {
+        Row: {
+          ai_cost_idr: number
+          confidence: number
+          created_at: string
+          created_by: string
+          dataset_label: string
+          estimated_value_idr: number
+          evidence: string[]
+          expected_impact: string
+          human_decision: Database["public"]["Enums"]["revenue_human_decision"]
+          id: string
+          input_tokens: number | null
+          kind: string
+          latency_ms: number
+          model: string
+          must_verify: string[]
+          opportunity: string
+          organization_id: string
+          output_tokens: number | null
+          pilot_key: string
+          reasoning_status: string
+          updated_at: string
+        }
+        Insert: {
+          ai_cost_idr?: number
+          confidence: number
+          created_at?: string
+          created_by: string
+          dataset_label: string
+          estimated_value_idr?: number
+          evidence?: string[]
+          expected_impact?: string
+          human_decision?: Database["public"]["Enums"]["revenue_human_decision"]
+          id?: string
+          input_tokens?: number | null
+          kind: string
+          latency_ms?: number
+          model: string
+          must_verify?: string[]
+          opportunity: string
+          organization_id: string
+          output_tokens?: number | null
+          pilot_key: string
+          reasoning_status: string
+          updated_at?: string
+        }
+        Update: {
+          ai_cost_idr?: number
+          confidence?: number
+          created_at?: string
+          created_by?: string
+          dataset_label?: string
+          estimated_value_idr?: number
+          evidence?: string[]
+          expected_impact?: string
+          human_decision?: Database["public"]["Enums"]["revenue_human_decision"]
+          id?: string
+          input_tokens?: number | null
+          kind?: string
+          latency_ms?: number
+          model?: string
+          must_verify?: string[]
+          opportunity?: string
+          organization_id?: string
+          output_tokens?: number | null
+          pilot_key?: string
+          reasoning_status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_revenue_opportunities_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1188,6 +1334,13 @@ export type Database = {
         | "NEEDS_MORE_DATA"
         | "UNKNOWN"
       lesson_state: "CANDIDATE" | "REVIEWED" | "APPROVED" | "REJECTED"
+      revenue_human_decision:
+        | "PENDING"
+        | "ACTION_TAKEN"
+        | "NO_ACTION"
+        | "REJECTED"
+        | "NEEDS_MORE_DATA"
+      revenue_value_kind: "NONE" | "REVENUE_INCREASE" | "COST_SAVING"
       verification_method:
         | "org_self_attested"
         | "platform_verified"
@@ -1391,6 +1544,14 @@ export const Constants = {
         "UNKNOWN",
       ],
       lesson_state: ["CANDIDATE", "REVIEWED", "APPROVED", "REJECTED"],
+      revenue_human_decision: [
+        "PENDING",
+        "ACTION_TAKEN",
+        "NO_ACTION",
+        "REJECTED",
+        "NEEDS_MORE_DATA",
+      ],
+      revenue_value_kind: ["NONE", "REVENUE_INCREASE", "COST_SAVING"],
       verification_method: [
         "org_self_attested",
         "platform_verified",
