@@ -54,6 +54,8 @@ export type ReasoningOutput = z.infer<typeof reasoningOutputSchema>;
 export const reasoningInputSchema = z
   .object({
     agentKey: z.literal(PILOT_AGENT_KEY),
+    /** Organization whose pilot emergency state gates this request. */
+    organizationId: z.string().uuid(),
     /** Trusted, system-validated facts. The ONLY basis for OBSERVED. */
     verified_facts: z.array(z.string().trim().min(1).max(600)).max(20),
     /** Human-entered text. Never a basis for OBSERVED. */
@@ -77,4 +79,4 @@ export type ReasoningTelemetry = {
 
 export type ReasoningResult =
   | { ok: true; output: ReasoningOutput; telemetry: ReasoningTelemetry }
-  | { ok: false; error: string; telemetry: ReasoningTelemetry };
+  | { ok: false; error: string; telemetry: ReasoningTelemetry; blocked?: true };

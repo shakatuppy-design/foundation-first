@@ -13,21 +13,15 @@ import {
   Link2,
   MessageSquare,
   Search,
-  ShieldAlert,
   Sparkles,
 } from "lucide-react";
 import { PilotReasoningSection } from "@/components/pilot-reasoning-section";
+import { PilotEmergencySection } from "@/components/pilot-emergency-section";
 import { AppShell } from "@/components/app-shell";
 import { RouteError, RouteNotFound } from "@/components/route-error";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -42,7 +36,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   authorityStatus,
   BEHAVIOR_STATUSES,
-  emergencyControls,
   findings,
   humanFeedback,
   pilotAgent,
@@ -534,9 +527,7 @@ function SandboxSection() {
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Sandbox status</CardTitle>
-        <CardDescription>
-          What is deliberately absent from this environment.
-        </CardDescription>
+        <CardDescription>What is deliberately absent from this environment.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {sandboxChecks.map((c) => (
@@ -544,7 +535,10 @@ function SandboxSection() {
             key={c.label}
             className="flex items-start gap-2.5 rounded-lg border border-border bg-secondary/30 p-3"
           >
-            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <CheckCircle2
+              className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+              aria-hidden="true"
+            />
             <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">{c.label}</p>
               <p className="font-mono text-[11px] text-muted-foreground">{c.value}</p>
@@ -556,76 +550,69 @@ function SandboxSection() {
   );
 }
 
-function EmergencySection() {
-  const [armed, setArmed] = useState<string | null>(null);
-
-  return (
-    <Card className="border-destructive/30">
-      <CardHeader>
-        <div className="flex flex-wrap items-center gap-2">
-          <CardTitle className="text-base">Emergency control</CardTitle>
-          <Badge variant="outline" className="font-mono text-[11px]">
-            VISUAL ONLY
-          </Badge>
-        </div>
-        <CardDescription>
-          These controls are a UI mock of a future safety surface. They are wired to nothing: no
-          server function, no database write, no authority change.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="grid gap-3 sm:grid-cols-2">
-          {emergencyControls.map((c) => {
-            const isArmed = armed === c.id;
-            return (
-              <div
-                key={c.id}
-                className="flex flex-col gap-2 rounded-lg border border-border bg-secondary/30 p-4"
-              >
-                <p className="text-sm font-medium text-foreground">{c.label}</p>
-                <p className="text-xs leading-relaxed text-muted-foreground">{c.detail}</p>
-                <Button
-                  type="button"
-                  variant={isArmed ? "destructive" : "outline"}
-                  size="sm"
-                  className="mt-auto w-full"
-                  aria-pressed={isArmed}
-                  onClick={() => setArmed(isArmed ? null : c.id)}
-                >
-                  {isArmed ? "Armed (no effect)" : c.label}
-                </Button>
-              </div>
-            );
-          })}
-        </div>
-        {armed && (
-          <p
-            role="status"
-            className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-xs leading-relaxed text-destructive"
-          >
-            <ShieldAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-            Control armed in the interface only. Nothing was paused, frozen, revoked or halted,
-            because this screen has no backend connection.
-          </p>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
 /* ---------- page ---------- */
 
 const SECTIONS = [
-  { id: "overview", title: "Pilot agent overview", icon: Gauge, description: "Identity, mode and sandbox counters for the pilot agent." },
-  { id: "findings", title: "Intelligence findings", icon: Search, description: "Observation, inference, hypothesis and counter-hypothesis per finding." },
-  { id: "evidence", title: "Evidence chain", icon: Link2, description: "Ordered evidence behind the selected finding." },
-  { id: "behavior", title: "Behavior lab", icon: FlaskConical, description: "Distribution of observations across behavior statuses." },
-  { id: "reasoning", title: "Reasoning gateway", icon: Brain, description: "Real model-assisted analysis of supplied evidence. No authority, no execution." },
-  { id: "feedback", title: "Human feedback", icon: MessageSquare, description: "Reviewer judgements recorded against findings." },
-  { id: "authority", title: "Authority status", icon: KeyRound, description: "What the pilot may observe, and what it may never touch." },
-  { id: "risk", title: "Risk status", icon: AlertTriangle, description: "Risks in the analysis, not in any action." },
-  { id: "sandbox", title: "Sandbox status", icon: Beaker, description: "Capabilities intentionally absent from this environment." },
-  { id: "emergency", title: "Emergency control", icon: Ban, description: "Visual-only safety surface with no backend connection." },
+  {
+    id: "overview",
+    title: "Pilot agent overview",
+    icon: Gauge,
+    description: "Identity, mode and sandbox counters for the pilot agent.",
+  },
+  {
+    id: "findings",
+    title: "Intelligence findings",
+    icon: Search,
+    description: "Observation, inference, hypothesis and counter-hypothesis per finding.",
+  },
+  {
+    id: "evidence",
+    title: "Evidence chain",
+    icon: Link2,
+    description: "Ordered evidence behind the selected finding.",
+  },
+  {
+    id: "behavior",
+    title: "Behavior lab",
+    icon: FlaskConical,
+    description: "Distribution of observations across behavior statuses.",
+  },
+  {
+    id: "reasoning",
+    title: "Reasoning gateway",
+    icon: Brain,
+    description: "Real model-assisted analysis of supplied evidence. No authority, no execution.",
+  },
+  {
+    id: "feedback",
+    title: "Human feedback",
+    icon: MessageSquare,
+    description: "Reviewer judgements recorded against findings.",
+  },
+  {
+    id: "authority",
+    title: "Authority status",
+    icon: KeyRound,
+    description: "What the pilot may observe, and what it may never touch.",
+  },
+  {
+    id: "risk",
+    title: "Risk status",
+    icon: AlertTriangle,
+    description: "Risks in the analysis, not in any action.",
+  },
+  {
+    id: "sandbox",
+    title: "Sandbox status",
+    icon: Beaker,
+    description: "Capabilities intentionally absent from this environment.",
+  },
+  {
+    id: "emergency",
+    title: "Emergency control",
+    icon: Ban,
+    description: "Real server-enforced emergency stop for the pilot agent. Fails closed.",
+  },
 ] as const;
 
 function PilotControlCenter() {
@@ -685,7 +672,7 @@ function PilotControlCenter() {
             {s.id === "authority" && <AuthoritySection />}
             {s.id === "risk" && <RiskSection />}
             {s.id === "sandbox" && <SandboxSection />}
-            {s.id === "emergency" && <EmergencySection />}
+            {s.id === "emergency" && <PilotEmergencySection />}
           </section>
         ))}
 

@@ -891,6 +891,50 @@ export type Database = {
         }
         Relationships: []
       }
+      pilot_emergency_events: {
+        Row: {
+          activated_by: string
+          created_at: string
+          id: string
+          new_state: string
+          organization_id: string
+          pilot_key: string
+          previous_state: string
+          reason: string
+          seq: number
+        }
+        Insert: {
+          activated_by?: string
+          created_at?: string
+          id?: string
+          new_state: string
+          organization_id: string
+          pilot_key?: string
+          previous_state: string
+          reason: string
+          seq?: number
+        }
+        Update: {
+          activated_by?: string
+          created_at?: string
+          id?: string
+          new_state?: string
+          organization_id?: string
+          pilot_key?: string
+          previous_state?: string
+          reason?: string
+          seq?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pilot_emergency_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
