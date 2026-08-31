@@ -7,6 +7,7 @@ import {
   Check,
   ChevronsUpDown,
   Fingerprint,
+  Gauge,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -41,6 +42,7 @@ const nav = [
   { to: "/requests", label: "My Requests", icon: Send },
   { to: "/review-requests", label: "Capability Requests", icon: ShieldQuestion },
   { to: "/contracts", label: "Contracts", icon: FileSignature },
+  { to: "/pilot", label: "Pilot Control Center", icon: Gauge },
 ] as const;
 
 function OrganizationSelector() {
