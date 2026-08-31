@@ -5,6 +5,7 @@ import {
   AlertTriangle,
   Ban,
   Beaker,
+  Brain,
   CheckCircle2,
   FlaskConical,
   Gauge,
@@ -15,6 +16,7 @@ import {
   ShieldAlert,
   Sparkles,
 } from "lucide-react";
+import { PilotReasoningSection } from "@/components/pilot-reasoning-section";
 import { AppShell } from "@/components/app-shell";
 import { RouteError, RouteNotFound } from "@/components/route-error";
 import { Badge } from "@/components/ui/badge";
@@ -618,6 +620,7 @@ const SECTIONS = [
   { id: "findings", title: "Intelligence findings", icon: Search, description: "Observation, inference, hypothesis and counter-hypothesis per finding." },
   { id: "evidence", title: "Evidence chain", icon: Link2, description: "Ordered evidence behind the selected finding." },
   { id: "behavior", title: "Behavior lab", icon: FlaskConical, description: "Distribution of observations across behavior statuses." },
+  { id: "reasoning", title: "Reasoning gateway", icon: Brain, description: "Real model-assisted analysis of supplied evidence. No authority, no execution." },
   { id: "feedback", title: "Human feedback", icon: MessageSquare, description: "Reviewer judgements recorded against findings." },
   { id: "authority", title: "Authority status", icon: KeyRound, description: "What the pilot may observe, and what it may never touch." },
   { id: "risk", title: "Risk status", icon: AlertTriangle, description: "Risks in the analysis, not in any action." },
@@ -677,6 +680,7 @@ function PilotControlCenter() {
             )}
             {s.id === "evidence" && <EvidenceSection finding={selected} />}
             {s.id === "behavior" && <BehaviorLabSection />}
+            {s.id === "reasoning" && <PilotReasoningSection />}
             {s.id === "feedback" && <FeedbackSection />}
             {s.id === "authority" && <AuthoritySection />}
             {s.id === "risk" && <RiskSection />}
