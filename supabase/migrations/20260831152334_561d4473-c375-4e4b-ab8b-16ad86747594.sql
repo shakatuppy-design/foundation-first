@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS public._lesson_test_out;
