@@ -13,7 +13,6 @@ import {
   Link2,
   MessageSquare,
   Search,
-  ShieldAlert,
   Sparkles,
 } from "lucide-react";
 import { PilotReasoningSection } from "@/components/pilot-reasoning-section";
@@ -43,7 +42,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   authorityStatus,
   BEHAVIOR_STATUSES,
-  emergencyControls,
   findings,
   humanFeedback,
   pilotAgent,
