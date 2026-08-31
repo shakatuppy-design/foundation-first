@@ -21,13 +21,7 @@ import { AppShell } from "@/components/app-shell";
 import { RouteError, RouteNotFound } from "@/components/route-error";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -533,9 +527,7 @@ function SandboxSection() {
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Sandbox status</CardTitle>
-        <CardDescription>
-          What is deliberately absent from this environment.
-        </CardDescription>
+        <CardDescription>What is deliberately absent from this environment.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {sandboxChecks.map((c) => (
@@ -543,7 +535,10 @@ function SandboxSection() {
             key={c.label}
             className="flex items-start gap-2.5 rounded-lg border border-border bg-secondary/30 p-3"
           >
-            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <CheckCircle2
+              className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+              aria-hidden="true"
+            />
             <div className="min-w-0">
               <p className="text-sm font-medium text-foreground">{c.label}</p>
               <p className="font-mono text-[11px] text-muted-foreground">{c.value}</p>
@@ -558,16 +553,66 @@ function SandboxSection() {
 /* ---------- page ---------- */
 
 const SECTIONS = [
-  { id: "overview", title: "Pilot agent overview", icon: Gauge, description: "Identity, mode and sandbox counters for the pilot agent." },
-  { id: "findings", title: "Intelligence findings", icon: Search, description: "Observation, inference, hypothesis and counter-hypothesis per finding." },
-  { id: "evidence", title: "Evidence chain", icon: Link2, description: "Ordered evidence behind the selected finding." },
-  { id: "behavior", title: "Behavior lab", icon: FlaskConical, description: "Distribution of observations across behavior statuses." },
-  { id: "reasoning", title: "Reasoning gateway", icon: Brain, description: "Real model-assisted analysis of supplied evidence. No authority, no execution." },
-  { id: "feedback", title: "Human feedback", icon: MessageSquare, description: "Reviewer judgements recorded against findings." },
-  { id: "authority", title: "Authority status", icon: KeyRound, description: "What the pilot may observe, and what it may never touch." },
-  { id: "risk", title: "Risk status", icon: AlertTriangle, description: "Risks in the analysis, not in any action." },
-  { id: "sandbox", title: "Sandbox status", icon: Beaker, description: "Capabilities intentionally absent from this environment." },
-  { id: "emergency", title: "Emergency control", icon: Ban, description: "Real server-enforced emergency stop for the pilot agent. Fails closed." },
+  {
+    id: "overview",
+    title: "Pilot agent overview",
+    icon: Gauge,
+    description: "Identity, mode and sandbox counters for the pilot agent.",
+  },
+  {
+    id: "findings",
+    title: "Intelligence findings",
+    icon: Search,
+    description: "Observation, inference, hypothesis and counter-hypothesis per finding.",
+  },
+  {
+    id: "evidence",
+    title: "Evidence chain",
+    icon: Link2,
+    description: "Ordered evidence behind the selected finding.",
+  },
+  {
+    id: "behavior",
+    title: "Behavior lab",
+    icon: FlaskConical,
+    description: "Distribution of observations across behavior statuses.",
+  },
+  {
+    id: "reasoning",
+    title: "Reasoning gateway",
+    icon: Brain,
+    description: "Real model-assisted analysis of supplied evidence. No authority, no execution.",
+  },
+  {
+    id: "feedback",
+    title: "Human feedback",
+    icon: MessageSquare,
+    description: "Reviewer judgements recorded against findings.",
+  },
+  {
+    id: "authority",
+    title: "Authority status",
+    icon: KeyRound,
+    description: "What the pilot may observe, and what it may never touch.",
+  },
+  {
+    id: "risk",
+    title: "Risk status",
+    icon: AlertTriangle,
+    description: "Risks in the analysis, not in any action.",
+  },
+  {
+    id: "sandbox",
+    title: "Sandbox status",
+    icon: Beaker,
+    description: "Capabilities intentionally absent from this environment.",
+  },
+  {
+    id: "emergency",
+    title: "Emergency control",
+    icon: Ban,
+    description: "Real server-enforced emergency stop for the pilot agent. Fails closed.",
+  },
 ] as const;
 
 function PilotControlCenter() {

@@ -159,7 +159,11 @@ export function PilotReasoningSection() {
           >
             {mutation.isPending ? "Analysing…" : "Run analysis"}
           </Button>
-          <Button variant="outline" onClick={runTestFixture} disabled={mutation.isPending || !orgId}>
+          <Button
+            variant="outline"
+            onClick={runTestFixture}
+            disabled={mutation.isPending || !orgId}
+          >
             RUN REAL REASONING TEST
           </Button>
         </div>

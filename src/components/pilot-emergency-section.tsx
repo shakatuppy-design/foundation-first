@@ -8,10 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useOrganizations } from "@/lib/org-context";
-import {
-  getPilotEmergencyState,
-  setPilotEmergencyState,
-} from "@/lib/pilot-emergency.functions";
+import { getPilotEmergencyState, setPilotEmergencyState } from "@/lib/pilot-emergency.functions";
 import type { PilotEmergencyView } from "@/lib/pilot-emergency-contract";
 import { emergencyControls } from "@/lib/pilot-mock";
 
