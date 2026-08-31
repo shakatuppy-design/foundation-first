@@ -41,10 +41,10 @@ export async function readPilotEmergencyState(
   try {
     const { data, error } = await supabase
       .from("pilot_emergency_events")
-      .select("previous_state, new_state, reason, activated_by, created_at")
+      .select("previous_state, new_state, reason, activated_by, created_at, seq")
       .eq("organization_id", organizationId)
       .eq("pilot_key", PILOT_EMERGENCY_KEY)
-      .order("created_at", { ascending: false })
+      .order("seq", { ascending: false })
       .limit(1);
     if (error) return closed();
     rows = (data ?? []) as RawEvent[];
