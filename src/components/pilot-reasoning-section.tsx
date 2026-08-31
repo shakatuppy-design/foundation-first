@@ -15,6 +15,12 @@ const DEFAULT_EVIDENCE = "Daily orders fell from 100 to 70 over the last three d
 const DEFAULT_TASK =
   "Identify what can be established from this evidence and what additional information management should investigate.";
 
+/** Fixed, harmless verification fixture. Analysis only — no business action. */
+const TEST_EVIDENCE = "Daily orders were:\nMonday 100\nTuesday 95\nWednesday 70.";
+const TEST_TASK =
+  "Analyze this situation for management. Separate facts from inference and hypothesis. Do not assume the cause of the decline.";
+
+
 function Group({ label, items }: { label: string; items: string[] }) {
   return (
     <div className="space-y-1.5">
