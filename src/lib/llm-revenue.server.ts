@@ -30,6 +30,10 @@ const SYSTEM_PROMPT = [
   "estimated_value_idr is an ESTIMATE in Indonesian Rupiah of possible future impact. It is never an achieved, actual or observed amount. If you cannot ground an estimate in the verified figures, do not raise the opportunity.",
   "If the verified facts show no meaningful change or opportunity, return an empty opportunities array — do not manufacture one.",
   'Reply with ONLY one JSON object, no prose or code fences, with exactly these keys: observed (array of {"claim": string, "verified_fact_index": integer}), unverified_claims, inferred, hypotheses, missing_information (arrays of short strings), opportunities (array of the objects described above), reasoning_status (one of "COMPLETE", "NEEDS_DATA", "UNCERTAIN", "BLOCKED").',
+  "Add no other keys anywhere. Every string must be under 400 characters. Numbers must be JSON numbers, never strings or formatted text.",
+  '"kind" must be exactly "REVENUE_INCREASE" or "COST_SAVING" — those are the only two permitted values. An opportunity that is really a diagnostic, a risk or an investigation belongs in hypotheses or missing_information, not in opportunities.',
+  '"confidence" is a JSON number between 0 and 1. "estimated_value_idr" is a plain JSON number of Rupiah with no separators, currency symbol or text.',
+  'Exact shape example: {"observed":[{"claim":"Sales fell 40%","verified_fact_index":1}],"unverified_claims":[],"inferred":[],"hypotheses":[],"missing_information":["Unit price per SKU"],"opportunities":[{"opportunity":"Recover lapsed Jakarta demand","evidence_fact_indices":[1],"expected_impact":"Restoring prior order volume would add roughly Rp 28.000.000 of weekly sales","estimated_value_idr":28000000,"kind":"REVENUE_INCREASE","confidence":0.55,"must_verify":["Whether the order drop is demand or supply driven"]}],"reasoning_status":"COMPLETE"}',
   "Use NEEDS_DATA when there are no or too few verified facts. Use UNCERTAIN when the verified facts conflict — report the contradiction and never silently pick a side. Use BLOCKED when asked for authority or execution, and then return no opportunities.",
 ].join("\n");
 
